@@ -31,7 +31,7 @@ func setupTestRepo(t *testing.T) func() {
 		if err := os.Chdir(originalDir); err != nil {
 			t.Errorf("failed to change back to original directory: %v", err)
 		}
-		os.RemoveAll(tmpDir)
+		_ = os.RemoveAll(tmpDir)
 	}
 }
 
