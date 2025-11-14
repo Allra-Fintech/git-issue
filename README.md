@@ -7,9 +7,94 @@ A lightweight CLI tool for managing issues as Markdown files in your git reposit
 - 📝 Create, list, and manage issues as Markdown files
 - 🏷️ Support for labels, assignees, and status tracking
 - 🔍 Search and filter issues
-- 📊 Simple statistics and reporting
 - 🤖 AI-friendly format with structured frontmatter
 - 🔄 Git-native workflow - all issues version controlled
+
+## Usage
+
+### Initialize issue tracking in your repository
+
+```bash
+git-issue init
+```
+
+This creates the `.issues/` directory structure in your current repository:
+
+```
+.issues/
+├── open/
+│   ├── 001-user-auth-bug.md
+│   └── 002-performance-improvement.md
+├── closed/
+│   └── 000-initial-setup.md
+├── .counter
+└── template.md
+```
+
+### Create a new issue
+
+```bash
+git-issue create "Fix Redis connection timeout"
+git-issue create "Fix Redis connection timeout" --assignee jonghun --label bug --label backend
+```
+
+Interactive mode:
+
+```bash
+git-issue create
+# Prompts for title, description, assignee, labels
+```
+
+### List issues
+
+```bash
+# List all open issues
+git-issue list
+
+# List all issues including closed
+git-issue list --all
+
+# Filter by assignee
+git-issue list --assignee jonghun
+
+# Filter by label
+git-issue list --label bug
+
+# Combine filters
+git-issue list --assignee jonghun --label backend --status open
+```
+
+### View an issue
+
+```bash
+git-issue show 001
+```
+
+### Close an issue
+
+```bash
+git-issue close 001
+```
+
+### Reopen an issue
+
+```bash
+git-issue open 001
+```
+
+### Edit an issue
+
+```bash
+git-issue edit 001
+# Opens the issue file in $EDITOR (defaults to vim)
+```
+
+### Search issues
+
+```bash
+git-issue search "Redis"
+git-issue search "authentication" --status open
+```
 
 ## Installation
 
@@ -52,128 +137,34 @@ cd git-issue
 go build -o git-issue
 ```
 
-## Directory Structure
-
-```
-.issues/
-├── open/
-│   ├── 001-user-auth-bug.md
-│   └── 002-performance-improvement.md
-├── closed/
-│   └── 000-initial-setup.md
-├── .counter
-└── template.md
-```
-
-## Usage
-
-### Initialize issue tracking in your repository
-
-```bash
-git-issue init
-```
-
-This creates the `.issues/` directory structure in your current repository.
-
-### Create a new issue
-
-```bash
-git-issue create "Fix Redis connection timeout"
-git-issue create "Fix Redis connection timeout" --assignee jonghun --label bug --label backend
-```
-
-Interactive mode:
-
-```bash
-git-issue create
-# Prompts for title, description, assignee, labels
-```
-
-### List issues
-
-```bash
-# List all open issues
-git-issue list
-
-# List all issues including closed
-git-issue list --all
-
-# Filter by assignee
-git-issue list --assignee jonghun
-
-# Filter by label
-git-issue list --label bug
-
-# Combine filters
-git-issue list --assignee jonghun --label backend --status open
-```
-
-### View an issue
-
-```bash
-git-issue show 001
-git-issue show 001 --full  # Show with full description and comments
-```
-
-### Close an issue
-
-```bash
-git-issue close 001
-git-issue close 001 --comment "Fixed in commit abc123"
-```
-
-### Reopen an issue
-
-```bash
-git-issue open 001
-```
-
-### Add a comment
-
-```bash
-git-issue comment 001 "Found the root cause in Redis session handling"
-```
-
-### Edit an issue
-
-```bash
-git-issue edit 001
-# Opens the issue file in $EDITOR (defaults to vim)
-```
-
-### Search issues
-
-```bash
-git-issue search "Redis"
-git-issue search "authentication" --status open
-```
-
-### Update labels or assignee
-
-```bash
-git-issue update 001 --assignee jonghun
-git-issue update 001 --add-label urgent --remove-label low-priority
-```
-
-### Statistics
-
-```bash
-git-issue stats
-# Shows: Total issues, Open/Closed count, Issues by label, Issues by assignee
-```
-
 ## AI Integration
 
-This format is designed to be easily readable by AI assistants:
+This format is designed to be easily readable by AI agents:
 
 - **Claude/ChatGPT**: Can read issue files directly from the repository
 - **GitHub Copilot**: Has context of open issues while coding
 - **Custom AI agents**: Can parse YAML frontmatter and Markdown content
 
-Example AI query:
+Example AI queries:
 
+**Planning your work:**
 ```
 "Look at the open issues in .issues/open/ and suggest which one I should work on next based on urgency and my recent commits"
+```
+
+**Getting implementation guidance:**
+```
+"Read issue .issues/open/003-add-user-authentication.md and provide a detailed implementation plan with:
+1. Required dependencies and packages
+2. Step-by-step implementation guide
+3. Security best practices to follow
+4. Test cases to cover
+5. Potential edge cases to handle"
+```
+
+**Code review with context:**
+```
+"Review my changes in src/auth.js against issue .issues/open/003-add-user-authentication.md and check if all requirements are met"
 ```
 
 ## Git Workflow Integration
@@ -186,31 +177,26 @@ git-issue create "Implement user profile API"
 git commit -m "Add profile endpoint (issue #005)"
 
 # Close when done
-git-issue close 005 --comment "Completed in PR #42"
+git-issue close 005
 git add .issues/
 git commit -m "Close issue #005"
 ```
 
 ## Commands Reference
 
-| Command               | Description                                     |
-| --------------------- | ----------------------------------------------- |
-| `init`                | Initialize issue tracking in current repository |
-| `create [title]`      | Create a new issue                              |
-| `list`                | List issues with optional filters               |
-| `show <id>`           | Show issue details                              |
-| `close <id>`          | Close an issue                                  |
-| `open <id>`           | Reopen a closed issue                           |
-| `comment <id> <text>` | Add a comment to an issue                       |
-| `edit <id>`           | Edit an issue in your editor                    |
-| `update <id>`         | Update issue metadata (assignee, labels)        |
-| `search <query>`      | Search issues by text                           |
-| `stats`               | Show issue statistics                           |
+| Command          | Description                                     |
+| ---------------- | ----------------------------------------------- |
+| `init`           | Initialize issue tracking in current repository |
+| `create [title]` | Create a new issue                              |
+| `list`           | List issues with optional filters               |
+| `show <id>`      | Show issue details                              |
+| `close <id>`     | Close an issue                                  |
+| `open <id>`      | Reopen a closed issue                           |
+| `edit <id>`      | Edit an issue in your editor                    |
+| `search <query>` | Search issues by text                           |
 
 ## Global Flags
 
-- `--config <path>` - Path to .issues directory (default: `./.issues`)
-- `--no-color` - Disable colored output
 - `-h, --help` - Show help for any command
 
 ## Command-Specific Options
@@ -219,7 +205,6 @@ git commit -m "Close issue #005"
 
 - `--assignee <name>` - Assign to user
 - `--label <label>` - Add label (can be used multiple times)
-- `--interactive, -i` - Interactive mode with prompts
 
 ### list
 
@@ -227,21 +212,10 @@ git commit -m "Close issue #005"
 - `--label <label>` - Filter by label
 - `--status <status>` - Filter by status (open/closed)
 - `--all, -a` - Include closed issues
-- `--format <format>` - Output format (table/json/simple)
-
-### show
-
-- `--full, -f` - Show full content including description and comments
 
 ### close/open
 
-- `--comment <text>` - Add a comment when changing status
-
-### update
-
-- `--assignee <name>` - Update assignee
-- `--add-label <label>` - Add a label
-- `--remove-label <label>` - Remove a label
+- `--commit, -c` - Commit the change to git
 
 ### search
 
@@ -277,7 +251,7 @@ golangci-lint run
 ### Project Structure
 
 ```
-git-issue-tracker/
+git-issue/
 ├── cmd/
 │   ├── root.go          # Root command and global flags
 │   ├── init.go          # Initialize command
@@ -286,11 +260,8 @@ git-issue-tracker/
 │   ├── show.go          # Show command
 │   ├── close.go         # Close command
 │   ├── open.go          # Open command
-│   ├── comment.go       # Comment command
 │   ├── edit.go          # Edit command
-│   ├── update.go        # Update command
-│   ├── search.go        # Search command
-│   └── stats.go         # Stats command
+│   └── search.go        # Search command
 ├── pkg/
 │   ├── issue/
 │   │   ├── issue.go     # Issue struct and operations
