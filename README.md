@@ -170,6 +170,54 @@ Example AI queries:
 "Review my changes in src/auth.js against issue .issues/open/003-add-user-authentication.md and check if all requirements are met"
 ```
 
+### Setting up AI Agent Instructions
+
+For optimal AI agent integration, create instruction files in your repository root to teach agents how to work with your issues:
+
+**AGENTS.md** or **CLAUDE.md**:
+
+```markdown
+# AI Agent Instructions
+
+## Issue Management
+
+This project uses git-issue for managing issues as Markdown files.
+
+### Finding Issues
+
+- **Open issues**: Located in `.issues/open/`
+- **Closed issues**: Located in `.issues/closed/`
+- **Issue file naming**: `{id}-{title-slug}.md` (e.g., `001-user-auth-bug.md`)
+
+### When a user references an issue
+
+If a user says "implement #001" or "fix issue 001":
+
+1. Search for the file matching the issue ID in `.issues/open/` or `.issues/closed/`
+2. Read the entire issue file to understand requirements
+3. Parse the YAML frontmatter for metadata (assignee, labels, status)
+4. Use the issue description and details to guide your implementation
+
+Example: For "#001", look for `.issues/open/001-*.md`
+
+### Working with issues
+
+- Always read the full issue before implementing
+- Reference the issue file path in your responses
+- Update issue status by moving files between open/ and closed/ directories
+- Maintain the YAML frontmatter structure when editing issues
+```
+
+**Example workflow:**
+
+```bash
+# User: "Give me a plan to implement #001"
+# AI agent will:
+# 1. Find .issues/open/001-*.md
+# 2. Read the issue content
+# 3. Provide implementation plan based on issue requirements
+```
+
 ## Git Workflow Integration
 
 ```bash
