@@ -43,9 +43,9 @@ Release tags use the format `vMAJOR.MINOR.PATCH` (for example `v1.2.0`).
    - Title: `v1.0.0`
    - Use the tag description as release notes (include highlights, contributors, breaking changes).
 4. Upload the cross-compiled binaries produced by `make build-all`:
-   - `git-issue-darwin-arm64`
-   - `git-issue-darwin-amd64`
-   - `git-issue-linux-amd64`
+   - `gi-darwin-arm64`
+   - `gi-darwin-amd64`
+   - `gi-linux-amd64`
 5. (Optional) Attach SHA256 checksums for each binary.
 
 ## Testing Releases
@@ -53,17 +53,17 @@ Release tags use the format `vMAJOR.MINOR.PATCH` (for example `v1.2.0`).
 For each platform:
 
 ```bash
-chmod +x git-issue-<os>-<arch>
-./git-issue-<os>-<arch> --version
-./git-issue-<os>-<arch> --help
+chmod +x gi-<os>-<arch>
+./gi-<os>-<arch> --version
+./gi-<os>-<arch> --help
 ```
 
 Perform a quick workflow smoke-test:
 
-1. `git-issue init`
-2. `git-issue create "Smoke test issue"`
-3. `git-issue list`
-4. `git-issue close 001`
+1. `gi init`
+2. `gi create "Smoke test issue"`
+3. `gi list`
+4. `gi close 001`
 
 ## Post-Release
 

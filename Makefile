@@ -1,23 +1,23 @@
 .PHONY: build build-all test test-coverage test-coverage-report lint fmt clean install help
 
 GO ?= go
-BINARY_NAME ?= git-issue
-INSTALL_DIR ?= /usr/local/bin
+BINARY_NAME ?= gi
+INSTALL_DIR ?= $(HOME)/.local/bin
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS ?= -s -w -X main.version=$(VERSION)
 
 # Build for current platform
 build:
 	@echo "Building $(BINARY_NAME) (version $(VERSION))..."
-	$(GO) build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME) .
+	$(GO) build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME) ./cmd/gi
 	@echo "Build complete: $(BINARY_NAME)"
 
 # Cross-compile for all supported platforms
 build-all:
 	@echo "Cross-compiling binaries (version $(VERSION))..."
-	GOOS=darwin GOARCH=arm64 $(GO) build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-darwin-arm64 .
-	GOOS=darwin GOARCH=amd64 $(GO) build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-darwin-amd64 .
-	GOOS=linux GOARCH=amd64 $(GO) build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-linux-amd64 .
+	GOOS=darwin GOARCH=arm64 $(GO) build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-darwin-arm64 ./cmd/gi
+	GOOS=darwin GOARCH=amd64 $(GO) build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-darwin-amd64 ./cmd/gi
+	GOOS=linux GOARCH=amd64 $(GO) build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-linux-amd64 ./cmd/gi
 	@ls -lh $(BINARY_NAME)-darwin-arm64 $(BINARY_NAME)-darwin-amd64 $(BINARY_NAME)-linux-amd64
 
 # Run tests
@@ -54,11 +54,11 @@ clean:
 	rm -f coverage.out coverage.html
 	@echo "Clean complete"
 
-# Install to INSTALL_DIR (default: /usr/local/bin)
+# Install to INSTALL_DIR (default: ~/.local/bin)
 install: build
 	@echo "Installing to $(INSTALL_DIR)..."
-	install -d $(INSTALL_DIR)
-	install -m 755 $(BINARY_NAME) $(INSTALL_DIR)/$(BINARY_NAME)
+	@mkdir -p "$(INSTALL_DIR)"
+	install -m 755 $(BINARY_NAME) "$(INSTALL_DIR)/$(BINARY_NAME)"
 	@echo "Installation complete"
 
 # Show available targets

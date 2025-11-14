@@ -25,9 +25,9 @@ var searchCmd = &cobra.Command{
 The search is case-insensitive and searches both the issue title and description.
 
 Examples:
-  git-issue search "Redis"
-  git-issue search "authentication" --status open
-  git-issue search "bug" --label backend --assignee john`,
+  gi search "Redis"
+  gi search "authentication" --status open
+  gi search "bug" --label backend --assignee john`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runSearch,
 }
@@ -42,7 +42,7 @@ func init() {
 func runSearch(cmd *cobra.Command, args []string) error {
 	// Check if repository is initialized
 	if !pkg.RepoExists() {
-		return fmt.Errorf(".issues directory not found. Run 'git-issue init' first")
+		return fmt.Errorf(".issues directory not found. Run 'gi init' first")
 	}
 
 	// Join all args as search query (in case query has spaces and wasn't quoted)

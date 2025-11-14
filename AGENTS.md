@@ -12,7 +12,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 git-issue/
-├── main.go              # Entry point
+├── cmd/gi/
+│   └── main.go          # Entry point
 ├── cmd/                 # CLI commands (Cobra-based)
 │   ├── root.go          # Root command and global flags
 │   ├── init.go          # Initialize .issues/ directory
@@ -81,7 +82,7 @@ Full issue description...
 
 ```bash
 # Build for current platform
-go build -o git-issue
+go build -o gi ./cmd/gi
 
 # Run tests
 go test ./...

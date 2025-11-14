@@ -26,11 +26,11 @@ var listCmd = &cobra.Command{
 By default, only open issues are shown. Use --all to include closed issues.
 
 Examples:
-  git-issue list                           # List open issues
-  git-issue list --all                     # List all issues
-  git-issue list --assignee john           # List issues assigned to john
-  git-issue list --label bug               # List issues with 'bug' label
-  git-issue list --status closed           # List closed issues`,
+  gi list                           # List open issues
+  gi list --all                     # List all issues
+  gi list --assignee john           # List issues assigned to john
+  gi list --label bug               # List issues with 'bug' label
+  gi list --status closed           # List closed issues`,
 	RunE: runList,
 }
 
@@ -45,7 +45,7 @@ func init() {
 func runList(cmd *cobra.Command, args []string) error {
 	// Check if repository is initialized
 	if !pkg.RepoExists() {
-		return fmt.Errorf(".issues directory not found. Run 'git-issue init' first")
+		return fmt.Errorf(".issues directory not found. Run 'gi init' first")
 	}
 
 	// Determine which directories to search

@@ -15,7 +15,7 @@ A lightweight CLI tool for managing issues as Markdown files in your git reposit
 ### Initialize issue tracking in your repository
 
 ```bash
-git-issue init
+gi init
 ```
 
 This creates the `.issues/` directory structure in your current repository:
@@ -34,59 +34,59 @@ This creates the `.issues/` directory structure in your current repository:
 ### Create a new issue
 
 ```bash
-git-issue create "Fix Redis connection timeout"
-git-issue create "Fix Redis connection timeout" --assignee jonghun --label bug --label backend
+gi create "Fix Redis connection timeout"
+gi create "Fix Redis connection timeout" --assignee jonghun --label bug --label backend
 ```
 
 ### List issues
 
 ```bash
 # List all open issues
-git-issue list
+gi list
 
 # List all issues including closed
-git-issue list --all
+gi list --all
 
 # Filter by assignee
-git-issue list --assignee jonghun
+gi list --assignee jonghun
 
 # Filter by label
-git-issue list --label bug
+gi list --label bug
 
 # Combine filters
-git-issue list --assignee jonghun --label backend --status open
+gi list --assignee jonghun --label backend --status open
 ```
 
 ### View an issue
 
 ```bash
-git-issue show 001
+gi show 001
 ```
 
 ### Close an issue
 
 ```bash
-git-issue close 001
+gi close 001
 ```
 
 ### Reopen an issue
 
 ```bash
-git-issue open 001
+gi open 001
 ```
 
 ### Edit an issue
 
 ```bash
-git-issue edit 001
+gi edit 001
 # Opens the issue file in $EDITOR (defaults to vim)
 ```
 
 ### Search issues
 
 ```bash
-git-issue search "Redis"
-git-issue search "authentication" --status open
+gi search "Redis"
+gi search "authentication" --status open
 ```
 
 ## Installation
@@ -97,26 +97,26 @@ Download the latest binary for your platform from the [releases page](https://gi
 
 ```bash
 # macOS (ARM)
-curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/git-issue-darwin-arm64 -o git-issue
-chmod +x git-issue
-sudo mv git-issue /usr/local/bin/
+curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/gi-darwin-arm64 -o gi
+chmod +x gi
+sudo mv gi /usr/local/bin/
 
 # macOS (Intel)
-curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/git-issue-darwin-amd64 -o git-issue
-chmod +x git-issue
-sudo mv git-issue /usr/local/bin/
+curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/gi-darwin-amd64 -o gi
+chmod +x gi
+sudo mv gi /usr/local/bin/
 
 # Linux
-curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/git-issue-linux-amd64 -o git-issue
-chmod +x git-issue
-sudo mv git-issue /usr/local/bin/
+curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/gi-linux-amd64 -o gi
+chmod +x gi
+sudo mv gi /usr/local/bin/
 ```
 
 ### From Source
 
 ```bash
 # Requires Go 1.21 or later
-go install github.com/Allra-Fintech/git-issue@latest
+go install github.com/Allra-Fintech/git-issue/cmd/gi@latest
 ```
 
 ### Build from Source
@@ -124,7 +124,7 @@ go install github.com/Allra-Fintech/git-issue@latest
 ```bash
 git clone https://github.com/Allra-Fintech/git-issue.git
 cd git-issue
-go build -o git-issue
+go build -o gi ./cmd/gi
 ```
 
 ### Release Process
@@ -135,22 +135,22 @@ See [RELEASE.md](RELEASE.md) for the full release checklist, tagging instruction
 
 #### Zsh (macOS)
 ```bash
-git-issue completion zsh > $(brew --prefix)/share/zsh/site-functions/_git-issue
+gi completion zsh > $(brew --prefix)/share/zsh/site-functions/_gi
 ```
 
 #### Bash
 
 **Linux:**
 ```bash
-git-issue completion bash > /etc/bash_completion.d/git-issue
+gi completion bash > /etc/bash_completion.d/gi
 ```
 
 **macOS:**
 ```bash
-git-issue completion bash > $(brew --prefix)/etc/bash_completion.d/git-issue
+gi completion bash > $(brew --prefix)/etc/bash_completion.d/gi
 ```
 
-For other shells or custom setups, run `git-issue completion --help`.
+For other shells or custom setups, run `gi completion --help`.
 
 ## AI Integration
 
@@ -196,7 +196,7 @@ For optimal AI agent integration, create instruction files in your repository ro
 
 ## Issue Management
 
-This project uses git-issue for managing issues as Markdown files.
+This project uses gi for managing issues as Markdown files.
 
 ### Finding Issues
 
@@ -238,21 +238,21 @@ Example: For "#001", look for `.issues/open/001-*.md`
 
 ```bash
 # Create issue for current work
-git-issue create "Implement user profile API"
+gi create "Implement user profile API"
 
 # Work on the implementation
 git commit -m "Add profile endpoint (issue #005)"
 
 # Close issue and automatically commit the change
-git-issue close 005 --commit
+gi close 005 --commit
 
 # Or manually manage the commit
-git-issue close 005
+gi close 005
 git add .issues/
 git commit -m "Close issue #005"
 
 # Reopen issue with automatic commit
-git-issue open 005 --commit
+gi open 005 --commit
 ```
 
 ## Commands Reference

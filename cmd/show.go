@@ -16,8 +16,8 @@ var showCmd = &cobra.Command{
 	Long: `Show detailed information about a specific issue.
 
 Examples:
-  git-issue show 001
-  git-issue show 42`,
+  gi show 001
+  gi show 42`,
 	Args: cobra.ExactArgs(1),
 	RunE: runShow,
 }
@@ -29,7 +29,7 @@ func init() {
 func runShow(cmd *cobra.Command, args []string) error {
 	// Check if repository is initialized
 	if !pkg.RepoExists() {
-		return fmt.Errorf(".issues directory not found. Run 'git-issue init' first")
+		return fmt.Errorf(".issues directory not found. Run 'gi init' first")
 	}
 
 	// Get issue ID
