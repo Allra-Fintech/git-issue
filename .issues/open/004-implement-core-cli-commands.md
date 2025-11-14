@@ -1,6 +1,5 @@
 ---
 id: "004"
-status: open
 assignee: ""
 labels: [feature, cli]
 created: 2025-11-14T00:00:00Z
@@ -42,22 +41,17 @@ git-issue init
 ```bash
 git-issue create [title]
 git-issue create "Fix bug" --assignee jonghun --label bug --label backend
-git-issue create  # Interactive mode
 ```
 
-- [ ] Accept title as argument
+- [ ] Accept title as required argument
 - [ ] Flags:
   - `--assignee <name>` - Set assignee
   - `--label <label>` - Add labels (repeatable)
-- [ ] Interactive mode when no title provided:
-  - Prompt for title
-  - Prompt for description (multi-line input)
-  - Prompt for assignee (optional)
-  - Prompt for labels (optional, comma-separated)
 - [ ] Generate next ID using `storage.GetNextID()`
 - [ ] Create issue file: `.issues/open/{id}-{slug}.md`
 - [ ] Set timestamps (created, updated)
 - [ ] Display created issue summary
+- [ ] User can edit the created file manually to add description
 
 ### List Command (cmd/list.go)
 
@@ -100,7 +94,6 @@ git-issue show 001
 ## Success Criteria
 
 - [ ] All 4 commands implemented and working
-- [ ] Interactive mode for create command works
 - [ ] Filters work correctly on list command
 - [ ] Table output is properly formatted
 - [ ] Color output works on supported terminals

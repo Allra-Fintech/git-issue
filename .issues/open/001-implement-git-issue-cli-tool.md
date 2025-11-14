@@ -1,6 +1,5 @@
 ---
 id: "001"
-status: open
 assignee: ""
 labels: [feature, enhancement]
 created: 2025-11-14T00:00:00Z
@@ -118,7 +117,6 @@ Issue files should have YAML frontmatter with Markdown body:
 ```markdown
 ---
 id: "001"
-status: open
 assignee: username
 labels: [bug, backend]
 created: 2025-11-14T10:30:00Z

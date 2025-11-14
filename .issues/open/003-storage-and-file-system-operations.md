@@ -1,6 +1,5 @@
 ---
 id: "003"
-status: open
 assignee: ""
 labels: [feature, backend]
 created: 2025-11-14T00:00:00Z
@@ -25,10 +24,10 @@ Implement the storage layer for managing issue files on the file system, includi
   - `.issues/.counter`
   - `.issues/template.md`
 - [ ] `GetNextID()` - Read and atomically increment counter
-- [ ] `SaveIssue(issue)` - Write issue to appropriate directory (open/closed)
-- [ ] `LoadIssue(id)` - Read issue from file system by ID
-- [ ] `MoveIssue(id, status)` - Move issue file between open/closed directories
-- [ ] `ListIssues(status)` - Get all issues from a directory
+- [ ] `SaveIssue(issue, dir)` - Write issue to specified directory (open/closed)
+- [ ] `LoadIssue(id)` - Read issue from file system by ID (searches both open/ and closed/)
+- [ ] `MoveIssue(id, fromDir, toDir)` - Move issue file between open/closed directories
+- [ ] `ListIssues(dir)` - Get all issues from a directory (open or closed)
 - [ ] `FindIssueFile(id)` - Search for issue file by ID pattern (`{id}-*.md`)
 - [ ] `DeleteIssue(id)` - Remove issue file (for cleanup/testing)
 
@@ -41,13 +40,13 @@ Implement the storage layer for managing issue files on the file system, includi
   ```yaml
   ---
   id: "001"
-  status: open
   assignee: username
   labels: [bug, backend]
   created: 2025-11-14T10:30:00Z
   updated: 2025-11-14T14:20:00Z
   ---
   ```
+  **Note:** Status is NOT a field - it's determined by directory location (open/ or closed/)
 
 ## Technical Considerations
 

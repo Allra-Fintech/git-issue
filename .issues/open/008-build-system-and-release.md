@@ -1,6 +1,5 @@
 ---
 id: "008"
-status: open
 assignee: ""
 labels: [build, release, devops]
 created: 2025-11-14T00:00:00Z

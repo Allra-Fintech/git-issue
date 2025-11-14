@@ -61,7 +61,6 @@ Example: For "#001", use glob pattern `.issues/open/001-*.md` or `.issues/closed
 ```markdown
 ---
 id: "001"
-status: open
 assignee: username
 labels: [bug, backend]
 created: 2025-11-14T10:30:00Z
@@ -74,6 +73,8 @@ updated: 2025-11-14T14:20:00Z
 
 Full issue description...
 ```
+
+**Note:** Status is determined by directory location (`.issues/open/` = open, `.issues/closed/` = closed), not by a field in the YAML frontmatter.
 
 ## Development Workflow
 
@@ -129,6 +130,7 @@ make lint           # Run golangci-lint
 - YAML frontmatter is delimited by `---`
 - Must preserve Markdown body exactly as written
 - Slug generation: lowercase, replace spaces/special chars with hyphens
+- Status field is NOT in YAML - status is determined by directory location
 
 ### Commands
 
@@ -139,14 +141,6 @@ All commands use Cobra. Global flag: `-h, --help`
 - `list`: `--all`, `--assignee <name>`, `--label <label>`, `--status <status>`
 - `close/open`: `--commit` (auto-commit to git)
 - `search`: `--status <status>`, `--assignee <name>`, `--label <label>`
-
-### Interactive Mode
-
-`git-issue create` with no title argument should prompt for:
-1. Title
-2. Description (multi-line)
-3. Assignee (optional)
-4. Labels (optional, comma-separated)
 
 ## Testing Requirements
 

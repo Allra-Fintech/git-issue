@@ -1,6 +1,5 @@
 ---
 id: "002"
-status: open
 assignee: ""
 labels: [feature, setup]
 created: 2025-11-14T00:00:00Z
