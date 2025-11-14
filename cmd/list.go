@@ -129,6 +129,7 @@ func runList(cmd *cobra.Command, args []string) error {
 	table.SetHeaderLine(false)
 	table.SetTablePadding("\t")
 	table.SetNoWhiteSpace(true)
+	table.SetAutoWrapText(false)
 
 	// Add rows
 	green := color.New(color.FgGreen).SprintFunc()
