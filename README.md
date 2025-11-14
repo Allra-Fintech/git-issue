@@ -127,6 +127,30 @@ cd git-issue
 go build -o git-issue
 ```
 
+### Makefile Targets
+
+The repository ships with a Makefile that wraps the common developer workflows:
+
+| Target | Description |
+| --- | --- |
+| `make build` | Build the CLI for the current platform with embedded version info |
+| `make build-all` | Cross-compile binaries for macOS (arm64/amd64) and Linux (amd64) |
+| `make test` / `make test-coverage` | Run the test suite (optionally with coverage) |
+| `make lint` | Run `golangci-lint` against the codebase |
+| `make fmt` | Format the tree with `go fmt ./...` |
+| `make clean` | Remove build artifacts and coverage reports |
+
+Override `VERSION` to embed a specific version string:
+
+```bash
+VERSION=v1.2.3 make build
+./git-issue --version
+```
+
+### Release Process
+
+See [RELEASE.md](RELEASE.md) for the full release checklist, tagging instructions, and binary verification steps.
+
 ### Shell Completion
 
 #### Zsh (macOS)
