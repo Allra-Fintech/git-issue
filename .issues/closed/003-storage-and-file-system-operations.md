@@ -16,7 +16,7 @@ Implement the storage layer for managing issue files on the file system, includi
 
 ## Tasks
 
-### Implement Storage Layer (pkg/issue/storage.go)
+### Implement Storage Layer (pkg/storage.go)
 
 - [ ] `InitializeRepo()` - Create `.issues/` directory structure:
   - `.issues/open/`
@@ -31,7 +31,7 @@ Implement the storage layer for managing issue files on the file system, includi
 - [ ] `FindIssueFile(id)` - Search for issue file by ID pattern (`{id}-*.md`)
 - [ ] `DeleteIssue(id)` - Remove issue file (for cleanup/testing)
 
-### Implement Parser (pkg/issue/parser.go)
+### Implement Parser (pkg/parser.go)
 
 - [ ] `ParseMarkdown(content)` - Parse YAML frontmatter + Markdown body into Issue struct
 - [ ] `SerializeIssue(issue)` - Convert Issue struct to Markdown with YAML frontmatter

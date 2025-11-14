@@ -1,4 +1,4 @@
-.PHONY: build build-all test test-coverage test-race lint fmt clean install help
+.PHONY: build build-all test test-coverage test-coverage-report lint fmt clean install help
 
 # Binary name
 BINARY_NAME=git-issue
@@ -35,15 +35,10 @@ test-coverage-report:
 	go tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated: coverage.html"
 
-# Run tests with race detection
-test-race:
-	@echo "Running tests with race detection..."
-	go test -race ./...
-
 # Run linter
 lint:
 	@echo "Running linter..."
-	golangci-lint run
+	go run github.com/golangci/golangci-lint/cmd/golangci-lint run
 
 # Format code
 fmt:
@@ -72,7 +67,6 @@ help:
 	@echo "  test               - Run tests"
 	@echo "  test-coverage      - Run tests with coverage"
 	@echo "  test-coverage-report - Generate HTML coverage report"
-	@echo "  test-race          - Run tests with race detection"
 	@echo "  lint               - Run golangci-lint"
 	@echo "  fmt                - Format code with go fmt"
 	@echo "  clean              - Remove build artifacts"
