@@ -3,6 +3,8 @@ name: Build binaries
 on:
   push:
     branches: [main]
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -32,6 +34,7 @@ jobs:
         run: make build-all
 
       - name: Upload artifacts
+        if: github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
           name: gi-binaries-${{ github.sha }}
@@ -40,3 +43,13 @@ jobs:
             gi-darwin-amd64
             gi-linux-amd64
           retention-days: 7
+
+      - name: Attach binaries to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            gi-darwin-arm64
+            gi-darwin-amd64
+            gi-linux-amd64
+          fail_on_unmatched_files: true
