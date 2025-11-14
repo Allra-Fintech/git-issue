@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/Allra-Fintech/git-issue/pkg"
@@ -34,9 +35,11 @@ func runShow(cmd *cobra.Command, args []string) error {
 	// Get issue ID
 	issueID := args[0]
 
-	// Pad ID if needed (e.g., "1" -> "001")
+	// Pad ID with zeros if needed (e.g., "1" -> "001")
 	if len(issueID) < 3 {
-		issueID = fmt.Sprintf("%03s", issueID)
+		if idNum, err := strconv.Atoi(issueID); err == nil {
+			issueID = fmt.Sprintf("%03d", idNum)
+		}
 	}
 
 	// Load issue
