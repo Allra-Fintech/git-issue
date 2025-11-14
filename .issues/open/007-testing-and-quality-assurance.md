@@ -18,7 +18,7 @@ Implement comprehensive test coverage and quality assurance for the git-issue CL
 
 ### Unit Tests
 
-#### Storage Layer (pkg/issue/storage_test.go)
+#### Storage Layer (pkg/storage_test.go)
 
 - [ ] Test `InitializeRepo()` - directory creation
 - [ ] Test `GetNextID()` - counter increment and concurrency
@@ -29,7 +29,7 @@ Implement comprehensive test coverage and quality assurance for the git-issue CL
 - [ ] Test `FindIssueFile()` - file finding by ID
 - [ ] Test error cases: missing files, permission errors
 
-#### Parser (pkg/issue/parser_test.go)
+#### Parser (pkg/parser_test.go)
 
 - [ ] Test `ParseMarkdown()` - YAML frontmatter parsing
 - [ ] Test `SerializeIssue()` - Issue to Markdown conversion
@@ -37,7 +37,7 @@ Implement comprehensive test coverage and quality assurance for the git-issue CL
 - [ ] Test edge cases: empty fields, special characters, malformed YAML
 - [ ] Test round-trip: serialize then parse should yield same Issue
 
-#### Issue Struct (pkg/issue/issue_test.go)
+#### Issue Struct (pkg/issue_test.go)
 
 - [ ] Test Issue struct validation
 - [ ] Test timestamp handling

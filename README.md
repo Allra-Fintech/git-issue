@@ -311,10 +311,9 @@ git-issue/
 │   ├── edit.go          # Edit command
 │   └── search.go        # Search command
 ├── pkg/
-│   └── issue/
-│       ├── issue.go     # Issue struct and operations
-│       ├── storage.go   # File system operations
-│       └── parser.go    # Markdown/YAML parsing
+│   ├── issue.go         # Issue struct and operations
+│   ├── storage.go       # File system operations
+│   └── parser.go        # Markdown/YAML parsing
 ├── main.go
 ├── go.mod
 ├── go.sum

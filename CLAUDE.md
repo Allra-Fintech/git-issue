@@ -24,10 +24,9 @@ git-issue/
 │   ├── edit.go          # Edit issues in $EDITOR
 │   └── search.go        # Full-text search
 ├── pkg/
-│   └── issue/
-│       ├── issue.go     # Core Issue struct and operations
-│       ├── storage.go   # File system operations (.counter, file I/O)
-│       └── parser.go    # YAML frontmatter + Markdown parsing
+│   ├── issue.go         # Core Issue struct and operations
+│   ├── storage.go       # File system operations (.counter, file I/O)
+│   └── parser.go        # YAML frontmatter + Markdown parsing
 └── .issues/             # Issue storage (NOT in version control for this repo)
     ├── open/            # Open issues: {id}-{slug}.md
     ├── closed/          # Closed issues

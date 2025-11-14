@@ -1,0 +1,314 @@
+package pkg
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"syscall"
+	"time"
+)
+
+const (
+	IssuesDir     = ".issues"
+	OpenDir       = "open"
+	ClosedDir     = "closed"
+	CounterFile   = ".counter"
+	TemplateFile  = "template.md"
+	DefaultEditor = "vim"
+)
+
+// InitializeRepo creates the .issues/ directory structure
+func InitializeRepo() error {
+	// Create main directory
+	if err := os.MkdirAll(IssuesDir, 0755); err != nil {
+		return fmt.Errorf("failed to create %s directory: %w", IssuesDir, err)
+	}
+
+	// Create open and closed subdirectories
+	openPath := filepath.Join(IssuesDir, OpenDir)
+	if err := os.MkdirAll(openPath, 0755); err != nil {
+		return fmt.Errorf("failed to create %s directory: %w", openPath, err)
+	}
+
+	closedPath := filepath.Join(IssuesDir, ClosedDir)
+	if err := os.MkdirAll(closedPath, 0755); err != nil {
+		return fmt.Errorf("failed to create %s directory: %w", closedPath, err)
+	}
+
+	// Initialize counter file
+	counterPath := filepath.Join(IssuesDir, CounterFile)
+	if _, err := os.Stat(counterPath); os.IsNotExist(err) {
+		if err := os.WriteFile(counterPath, []byte("1\n"), 0644); err != nil {
+			return fmt.Errorf("failed to create counter file: %w", err)
+		}
+	}
+
+	// Create template file
+	templatePath := filepath.Join(IssuesDir, TemplateFile)
+	if _, err := os.Stat(templatePath); os.IsNotExist(err) {
+		template := `---
+id: ""
+assignee: ""
+labels: []
+created:
+updated:
+---
+
+# Issue Title
+
+## Description
+
+Describe the issue here...
+
+## Requirements
+
+- Requirement 1
+- Requirement 2
+
+## Success Criteria
+
+- [ ] Criterion 1
+- [ ] Criterion 2
+`
+		if err := os.WriteFile(templatePath, []byte(template), 0644); err != nil {
+			return fmt.Errorf("failed to create template file: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// GetNextID reads and atomically increments the counter
+func GetNextID() (int, error) {
+	counterPath := filepath.Join(IssuesDir, CounterFile)
+
+	// Open file for reading and writing
+	file, err := os.OpenFile(counterPath, os.O_RDWR, 0644)
+	if err != nil {
+		return 0, fmt.Errorf("failed to open counter file: %w", err)
+	}
+	defer file.Close()
+
+	// Lock file for exclusive access
+	if err := syscall.Flock(int(file.Fd()), syscall.LOCK_EX); err != nil {
+		return 0, fmt.Errorf("failed to lock counter file: %w", err)
+	}
+	defer syscall.Flock(int(file.Fd()), syscall.LOCK_UN)
+
+	// Read current counter value
+	data, err := os.ReadFile(counterPath)
+	if err != nil {
+		return 0, fmt.Errorf("failed to read counter: %w", err)
+	}
+
+	currentID, err := strconv.Atoi(strings.TrimSpace(string(data)))
+	if err != nil {
+		return 0, fmt.Errorf("invalid counter value: %w", err)
+	}
+
+	// Write incremented value
+	nextID := currentID + 1
+	if err := file.Truncate(0); err != nil {
+		return 0, fmt.Errorf("failed to truncate counter file: %w", err)
+	}
+	if _, err := file.Seek(0, 0); err != nil {
+		return 0, fmt.Errorf("failed to seek counter file: %w", err)
+	}
+	if _, err := file.WriteString(fmt.Sprintf("%d\n", nextID)); err != nil {
+		return 0, fmt.Errorf("failed to write counter: %w", err)
+	}
+
+	return currentID, nil
+}
+
+// SaveIssue writes an issue to the specified directory (open or closed)
+func SaveIssue(issue *Issue, dir string) error {
+	// Generate filename
+	slug := GenerateSlug(issue.Title)
+	filename := fmt.Sprintf("%s-%s.md", issue.ID, slug)
+	path := filepath.Join(IssuesDir, dir, filename)
+
+	// Serialize issue
+	content, err := SerializeIssue(issue)
+	if err != nil {
+		return fmt.Errorf("failed to serialize issue: %w", err)
+	}
+
+	// Write to file
+	if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+		return fmt.Errorf("failed to write issue file: %w", err)
+	}
+
+	return nil
+}
+
+// LoadIssue reads an issue from file system by ID (searches both open/ and closed/)
+func LoadIssue(id string) (*Issue, string, error) {
+	// Try to find the issue file
+	path, dir, err := FindIssueFile(id)
+	if err != nil {
+		return nil, "", err
+	}
+
+	// Read file
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to read issue file: %w", err)
+	}
+
+	// Parse issue
+	issue, err := ParseMarkdown(string(data))
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to parse issue: %w", err)
+	}
+
+	return issue, dir, nil
+}
+
+// MoveIssue moves an issue file between directories
+func MoveIssue(id string, fromDir, toDir string) error {
+	// Find the issue file
+	oldPath, currentDir, err := FindIssueFile(id)
+	if err != nil {
+		return err
+	}
+
+	// Verify it's in the expected source directory
+	if currentDir != fromDir {
+		return fmt.Errorf("issue %s is in %s, not %s", id, currentDir, fromDir)
+	}
+
+	// Generate new path
+	filename := filepath.Base(oldPath)
+	newPath := filepath.Join(IssuesDir, toDir, filename)
+
+	// Move file atomically
+	if err := os.Rename(oldPath, newPath); err != nil {
+		return fmt.Errorf("failed to move issue file: %w", err)
+	}
+
+	return nil
+}
+
+// ListIssues gets all issues from a directory
+func ListIssues(dir string) ([]*Issue, error) {
+	dirPath := filepath.Join(IssuesDir, dir)
+
+	// Read directory
+	entries, err := os.ReadDir(dirPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read directory %s: %w", dirPath, err)
+	}
+
+	var issues []*Issue
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".md") {
+			continue
+		}
+
+		// Read and parse issue
+		path := filepath.Join(dirPath, entry.Name())
+		data, err := os.ReadFile(path)
+		if err != nil {
+			continue // Skip files we can't read
+		}
+
+		issue, err := ParseMarkdown(string(data))
+		if err != nil {
+			continue // Skip files we can't parse
+		}
+
+		issues = append(issues, issue)
+	}
+
+	return issues, nil
+}
+
+// FindIssueFile searches for an issue file by ID pattern in both open/ and closed/
+// Returns the full path and the directory name (open or closed)
+func FindIssueFile(id string) (string, string, error) {
+	// Search in open directory first
+	openPath := filepath.Join(IssuesDir, OpenDir)
+	if path, err := findInDirectory(openPath, id); err == nil {
+		return path, OpenDir, nil
+	}
+
+	// Search in closed directory
+	closedPath := filepath.Join(IssuesDir, ClosedDir)
+	if path, err := findInDirectory(closedPath, id); err == nil {
+		return path, ClosedDir, nil
+	}
+
+	return "", "", fmt.Errorf("issue %s not found", id)
+}
+
+// findInDirectory searches for a file matching the ID pattern in a specific directory
+func findInDirectory(dir, id string) (string, error) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return "", err
+	}
+
+	pattern := fmt.Sprintf("%s-", id)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		if strings.HasPrefix(entry.Name(), pattern) && strings.HasSuffix(entry.Name(), ".md") {
+			return filepath.Join(dir, entry.Name()), nil
+		}
+	}
+
+	return "", fmt.Errorf("not found")
+}
+
+// DeleteIssue removes an issue file (for cleanup/testing)
+func DeleteIssue(id string) error {
+	path, _, err := FindIssueFile(id)
+	if err != nil {
+		return err
+	}
+
+	if err := os.Remove(path); err != nil {
+		return fmt.Errorf("failed to delete issue file: %w", err)
+	}
+
+	return nil
+}
+
+// RepoExists checks if the .issues directory exists
+func RepoExists() bool {
+	_, err := os.Stat(IssuesDir)
+	return err == nil
+}
+
+// GetIssuesPath returns the path to the .issues directory
+func GetIssuesPath() string {
+	return IssuesDir
+}
+
+// GetOpenPath returns the path to the open issues directory
+func GetOpenPath() string {
+	return filepath.Join(IssuesDir, OpenDir)
+}
+
+// GetClosedPath returns the path to the closed issues directory
+func GetClosedPath() string {
+	return filepath.Join(IssuesDir, ClosedDir)
+}
+
+// NewIssue creates a new Issue with default values
+func NewIssue(id int, title, assignee string, labels []string) *Issue {
+	now := time.Now()
+	return &Issue{
+		ID:       FormatID(id),
+		Assignee: assignee,
+		Labels:   labels,
+		Created:  now,
+		Updated:  now,
+		Title:    title,
+		Body:     "",
+	}
+}
