@@ -2,7 +2,7 @@
 
 GO ?= go
 BINARY_NAME ?= git-issue
-INSTALL_DIR ?= /usr/local/bin
+INSTALL_DIR ?= $(HOME)/.local/bin
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS ?= -s -w -X main.version=$(VERSION)
 
@@ -54,11 +54,11 @@ clean:
 	rm -f coverage.out coverage.html
 	@echo "Clean complete"
 
-# Install to INSTALL_DIR (default: /usr/local/bin)
+# Install to INSTALL_DIR (default: ~/.local/bin)
 install: build
 	@echo "Installing to $(INSTALL_DIR)..."
-	install -d $(INSTALL_DIR)
-	install -m 755 $(BINARY_NAME) $(INSTALL_DIR)/$(BINARY_NAME)
+	@mkdir -p "$(INSTALL_DIR)"
+	install -m 755 $(BINARY_NAME) "$(INSTALL_DIR)/$(BINARY_NAME)"
 	@echo "Installation complete"
 
 # Show available targets

@@ -31,7 +31,7 @@ make fmt
 # Clean artifacts
 make clean
 
-# Install locally (default /usr/local/bin; override INSTALL_DIR if needed)
+# Install locally (default ~/.local/bin; override INSTALL_DIR if needed)
 make install
 ```
 
@@ -45,7 +45,7 @@ make install
 | `make lint` | Run `golangci-lint` against the codebase |
 | `make fmt` | Format the tree with `go fmt ./...` |
 | `make clean` | Remove build artifacts and coverage reports |
-| `make install` | Build and install to `/usr/local/bin` (or custom `INSTALL_DIR`) |
+| `make install` | Build and install to `~/.local/bin` (override `INSTALL_DIR` as needed) |
 
 Override `VERSION` to embed a specific version string:
 
