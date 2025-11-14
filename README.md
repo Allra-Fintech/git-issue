@@ -148,11 +148,13 @@ This format is designed to be easily readable by AI agents:
 Example AI queries:
 
 **Planning your work:**
+
 ```
 "Look at the open issues in .issues/open/ and suggest which one I should work on next based on urgency and my recent commits"
 ```
 
 **Getting implementation guidance:**
+
 ```
 "Read issue .issues/open/003-add-user-authentication.md and provide a detailed implementation plan with:
 1. Required dependencies and packages
@@ -163,6 +165,7 @@ Example AI queries:
 ```
 
 **Code review with context:**
+
 ```
 "Review my changes in src/auth.js against issue .issues/open/003-add-user-authentication.md and check if all requirements are met"
 ```
@@ -314,15 +317,6 @@ require (
 - ✅ **Portable**: Easy to migrate or backup
 - ✅ **Single binary**: No runtime dependencies
 
-## Use Cases
-
-- Small to medium teams (5-30 developers)
-- Projects where context is important for AI assistance
-- Teams wanting to reduce external dependencies
-- Open source projects with simple tracking needs
-- Personal projects and side projects
-- Temporary issue tracking before migrating to full system
-
 ## Comparison with Other Tools
 
 | Feature      | git-issue | GitHub Issues | Jira    | Linear   |
@@ -333,35 +327,14 @@ require (
 | Dependencies | None      | GitHub        | Server  | Internet |
 | Cost         | Free      | Free          | $$      | $$       |
 
-## Roadmap
-
-- [ ] Milestone support
-- [ ] Issue templates
-- [ ] Export to other formats (JSON, CSV)
-- [ ] Import from GitHub/Jira/Linear
-- [ ] Sync with external systems
-- [ ] Web UI for browsing
-- [ ] Git hooks integration
-- [ ] Issue dependencies/blocking
-
 ## License
 
 MIT
 
 ## Author
 
-JongHun - Allra Engineering
+[Allra fintech](https://github.com/Allra-Fintech)
 
 ---
 
 **Note**: This tool is designed to complement, not replace, full-featured issue trackers. For teams already using Jira/Linear/GitHub Issues, consider using this as a synced cache for AI context rather than the source of truth.
-Updated with:
-
-Go-specific installation methods (binaries, go install)
-Go development setup and project structure
-More detailed command options and flags
-Build instructions with Makefile
-Go dependencies listed
-Better examples for Go CLI patterns
-
-Want me to start implementing the actual Go code now?RetryClaude can make mistakes. Please double-check responses.
