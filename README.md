@@ -127,6 +127,27 @@ cd git-issue
 go build -o git-issue
 ```
 
+### Shell Completion
+
+#### Zsh (macOS)
+```bash
+git-issue completion zsh > $(brew --prefix)/share/zsh/site-functions/_git-issue
+```
+
+#### Bash
+
+**Linux:**
+```bash
+git-issue completion bash > /etc/bash_completion.d/git-issue
+```
+
+**macOS:**
+```bash
+git-issue completion bash > $(brew --prefix)/etc/bash_completion.d/git-issue
+```
+
+For other shells or custom setups, run `git-issue completion --help`.
+
 ## AI Integration
 
 This format is designed to be easily readable by AI agents:
@@ -273,85 +294,7 @@ git-issue open 005 --commit
 
 ## Development
 
-### Prerequisites
-
-- Go 1.21 or later
-
-### Build
-
-```bash
-# Install dependencies (including dev tools)
-go mod download
-
-# Build for current platform
-make build
-
-# Build for all platforms (macOS ARM64/AMD64, Linux AMD64)
-make build-all
-
-# Run tests
-make test
-
-# Run tests with coverage
-make test-coverage
-
-# Run linter (uses golangci-lint as a dev dependency, no global install needed)
-make lint
-
-# Format code
-make fmt
-```
-
-**Note:** `golangci-lint` is tracked as a dev dependency in `tools.go` and doesn't need to be installed globally. The Makefile automatically runs it via `go run`.
-
-### Project Structure
-
-```
-git-issue/
-├── .github/
-│   └── workflows/
-│       └── ci.yml       # GitHub Actions CI workflow
-├── cmd/
-│   ├── root.go          # Root command and global flags
-│   ├── init.go          # Initialize command
-│   ├── create.go        # Create command
-│   ├── list.go          # List command
-│   ├── show.go          # Show command
-│   ├── close.go         # Close command
-│   ├── open.go          # Open command
-│   ├── edit.go          # Edit command
-│   └── search.go        # Search command
-├── pkg/
-│   ├── issue.go         # Issue struct and operations
-│   ├── storage.go       # File system operations
-│   └── parser.go        # Markdown/YAML parsing
-├── main.go
-├── tools.go             # Dev tool dependencies
-├── go.mod
-├── go.sum
-├── Makefile
-└── README.md
-```
-
-### Dependencies
-
-```go
-require (
-    github.com/spf13/cobra v1.8.0
-    github.com/spf13/viper v1.18.0
-    gopkg.in/yaml.v3 v3.0.1
-    github.com/fatih/color v1.16.0
-    github.com/olekukonko/tablewriter v0.0.5
-)
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed development guidelines, build instructions, and contribution workflow.
 
 ## Why Git-based Issue Tracking?
 

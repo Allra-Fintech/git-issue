@@ -24,4 +24,7 @@ func Execute() error {
 func init() {
 	// Set custom version template
 	rootCmd.SetVersionTemplate(fmt.Sprintf("git-issue version %s\n", version))
+
+	// Enable completion command
+	rootCmd.CompletionOptions.DisableDefaultCmd = false
 }
