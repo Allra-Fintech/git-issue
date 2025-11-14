@@ -5,7 +5,7 @@ labels:
     - feature
     - cli
 created: 2025-11-14T00:00:00Z
-updated: 2025-11-14T06:21:06.209059411Z
+updated: 2025-11-14T16:28:45.827346+09:00
 ---
 
 # Implement Issue Management Commands
