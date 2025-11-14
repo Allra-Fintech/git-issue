@@ -1,9 +1,11 @@
 ---
 id: "007"
 assignee: ""
-labels: [testing, quality]
+labels:
+    - testing
+    - quality
 created: 2025-11-14T00:00:00Z
-updated: 2025-11-14T00:00:00Z
+updated: 2025-11-14T17:04:41.62371+09:00
 ---
 
 # Testing and Quality Assurance
