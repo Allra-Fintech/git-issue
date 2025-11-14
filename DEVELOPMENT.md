@@ -51,7 +51,7 @@ Override `VERSION` to embed a specific version string:
 
 ```bash
 VERSION=v1.2.3 make build
-./git-issue --version
+./gi --version
 ```
 
 **Note:** `golangci-lint` is tracked as a dev dependency in `tools.go` and doesn't need to be installed globally. The Makefile automatically runs it via `go run`.
@@ -77,7 +77,8 @@ git-issue/
 │   ├── issue.go         # Issue struct and operations
 │   ├── storage.go       # File system operations
 │   └── parser.go        # Markdown/YAML parsing
-├── main.go
+├── cmd/gi/
+│   └── main.go          # Entry point that wires Cobra commands
 ├── tools.go             # Dev tool dependencies
 ├── go.mod
 ├── go.sum

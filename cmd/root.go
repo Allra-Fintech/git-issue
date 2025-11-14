@@ -9,9 +9,9 @@ import (
 var version = "dev"
 
 var rootCmd = &cobra.Command{
-	Use:   "git-issue",
+	Use:   "gi",
 	Short: "A lightweight CLI tool for managing issues as Markdown files",
-	Long: `git-issue is a CLI tool for managing issues as Markdown files in your git repository.
+	Long: `gi (git-issue) is a CLI tool for managing issues as Markdown files in your git repository.
 It provides AI agents and developers direct access to issue context without external integrations.`,
 	Version: version,
 }
@@ -39,5 +39,5 @@ func SetVersion(v string) {
 }
 
 func setVersionTemplate() {
-	rootCmd.SetVersionTemplate(fmt.Sprintf("git-issue version %s\n", version))
+	rootCmd.SetVersionTemplate(fmt.Sprintf("gi version %s\n", version))
 }

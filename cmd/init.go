@@ -26,7 +26,7 @@ func init() {
 func runInit(cmd *cobra.Command, args []string) error {
 	// Check if .issues already exists
 	if pkg.RepoExists() {
-		return fmt.Errorf(".issues directory already exists. Use 'git-issue list' to see existing issues")
+		return fmt.Errorf(".issues directory already exists. Use 'gi list' to see existing issues")
 	}
 
 	// Initialize the repository
@@ -43,7 +43,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	fmt.Println("  ├── .counter    # Issue ID counter (initialized to 1)")
 	fmt.Println("  └── template.md # Template for new issues")
 	fmt.Println()
-	fmt.Println("You can now create issues with 'git-issue create <title>'")
+	fmt.Println("You can now create issues with 'gi create <title>'")
 
 	return nil
 }

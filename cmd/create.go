@@ -20,8 +20,8 @@ var createCmd = &cobra.Command{
 	Long: `Create a new issue with the specified title.
 
 Examples:
-  git-issue create "Fix authentication bug"
-  git-issue create "Add user profile" --assignee john --label feature --label backend`,
+  gi create "Fix authentication bug"
+  gi create "Add user profile" --assignee john --label feature --label backend`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runCreate,
 }
@@ -35,7 +35,7 @@ func init() {
 func runCreate(cmd *cobra.Command, args []string) error {
 	// Check if repository is initialized
 	if !pkg.RepoExists() {
-		return fmt.Errorf(".issues directory not found. Run 'git-issue init' first")
+		return fmt.Errorf(".issues directory not found. Run 'gi init' first")
 	}
 
 	// Join all args as title (in case title has spaces and wasn't quoted)

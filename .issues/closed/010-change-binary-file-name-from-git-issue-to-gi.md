@@ -3,7 +3,7 @@ id: "010"
 assignee: ""
 labels: []
 created: 2025-11-14T21:44:51.946687+09:00
-updated: 2025-11-14T21:44:51.946687+09:00
+updated: 2025-11-14T22:23:23.349942+09:00
 ---
 
 # Change binary file name from git-issue to gi
