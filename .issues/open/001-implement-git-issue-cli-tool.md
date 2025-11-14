@@ -87,7 +87,7 @@ Build a lightweight CLI tool for managing issues as Markdown files in git reposi
 
 **Makefile targets:**
 - `make build` - Build for current platform
-- `make build-all` - Cross-compile for macOS (ARM64/AMD64), Linux (AMD64), Windows (AMD64)
+- `make build-all` - Cross-compile for macOS (ARM64/AMD64), Linux (AMD64)
 - `make test` - Run all tests
 - `make lint` - Run golangci-lint
 
@@ -96,7 +96,7 @@ Build a lightweight CLI tool for managing issues as Markdown files in git reposi
 1. **File Naming:** Use pattern `{id}-{slug}.md` where slug is URL-safe title
 2. **Atomic Operations:** Ensure file moves are atomic
 3. **Concurrency:** Handle `.counter` file race conditions
-4. **Cross-platform:** Test on Windows, macOS, Linux
+4. **Cross-platform:** Test on macOS and Linux (Windows not currently supported)
 5. **Editor Integration:** Support various `$EDITOR` values
 6. **Git Safety:** Never force operations, check git status
 
