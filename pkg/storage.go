@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"syscall"
 	"time"
 )
 
@@ -80,22 +79,9 @@ Describe the issue here...
 	return nil
 }
 
-// GetNextID reads and atomically increments the counter
+// GetNextID reads and increments the counter
 func GetNextID() (int, error) {
 	counterPath := filepath.Join(IssuesDir, CounterFile)
-
-	// Open file for reading and writing
-	file, err := os.OpenFile(counterPath, os.O_RDWR, 0644)
-	if err != nil {
-		return 0, fmt.Errorf("failed to open counter file: %w", err)
-	}
-	defer file.Close()
-
-	// Lock file for exclusive access
-	if err := syscall.Flock(int(file.Fd()), syscall.LOCK_EX); err != nil {
-		return 0, fmt.Errorf("failed to lock counter file: %w", err)
-	}
-	defer syscall.Flock(int(file.Fd()), syscall.LOCK_UN)
 
 	// Read current counter value
 	data, err := os.ReadFile(counterPath)
@@ -110,13 +96,7 @@ func GetNextID() (int, error) {
 
 	// Write incremented value
 	nextID := currentID + 1
-	if err := file.Truncate(0); err != nil {
-		return 0, fmt.Errorf("failed to truncate counter file: %w", err)
-	}
-	if _, err := file.Seek(0, 0); err != nil {
-		return 0, fmt.Errorf("failed to seek counter file: %w", err)
-	}
-	if _, err := file.WriteString(fmt.Sprintf("%d\n", nextID)); err != nil {
+	if err := os.WriteFile(counterPath, []byte(fmt.Sprintf("%d\n", nextID)), 0644); err != nil {
 		return 0, fmt.Errorf("failed to write counter: %w", err)
 	}
 

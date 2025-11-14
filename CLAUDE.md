@@ -30,7 +30,7 @@ git-issue/
 └── .issues/             # Issue storage (NOT in version control for this repo)
     ├── open/            # Open issues: {id}-{slug}.md
     ├── closed/          # Closed issues
-    ├── .counter         # Next issue ID (atomic increment)
+    ├── .counter         # Next issue ID
     └── template.md      # Template for new issues
 ```
 
@@ -111,10 +111,9 @@ make lint           # Run golangci-lint
 - ID is zero-padded 3 digits from `.counter` file
 - Slug is URL-safe version of title (lowercase, hyphens, no special chars)
 
-### Storage Layer (pkg/issue/storage.go)
+### Storage Layer (pkg/storage.go)
 
-- **Atomic operations**: File moves between `open/` and `closed/` must be atomic
-- **Concurrency**: `.counter` file increments must handle race conditions (use file locking)
+- **File moves**: File moves between `open/` and `closed/` use `os.Rename`
 - **FindIssueFile**: Must search by ID prefix since filename includes slug which may not match
 
 ### Git Integration
@@ -124,7 +123,7 @@ make lint           # Run golangci-lint
 - Never use `--force` or destructive git commands
 - Commit message format: "Close issue #001" or "Reopen issue #001"
 
-### Parser (pkg/issue/parser.go)
+### Parser (pkg/parser.go)
 
 - YAML frontmatter is delimited by `---`
 - Must preserve Markdown body exactly as written

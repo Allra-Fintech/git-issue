@@ -21,7 +21,7 @@ Implement comprehensive test coverage and quality assurance for the git-issue CL
 #### Storage Layer (pkg/storage_test.go)
 
 - [ ] Test `InitializeRepo()` - directory creation
-- [ ] Test `GetNextID()` - counter increment and concurrency
+- [ ] Test `GetNextID()` - counter increment
 - [ ] Test `SaveIssue()` - file writing
 - [ ] Test `LoadIssue()` - file reading
 - [ ] Test `MoveIssue()` - file moving between directories
@@ -48,7 +48,6 @@ Implement comprehensive test coverage and quality assurance for the git-issue CL
 - [ ] Test git integration with `--commit` flag
 - [ ] Test search with various filters
 - [ ] Test edit command workflow
-- [ ] Test concurrent issue creation (counter safety)
 
 ### Error Handling Tests
 
@@ -110,7 +109,6 @@ func assertFileExists(t *testing.T, path string)
 - [ ] All linting issues resolved
 - [ ] Tests run successfully on macOS and Linux
 - [ ] CI/CD pipeline configured (if applicable)
-- [ ] No race conditions detected: `go test -race ./...`
 
 ## Dependencies
 

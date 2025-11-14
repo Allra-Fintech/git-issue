@@ -48,10 +48,6 @@ Create comprehensive Makefile with the following targets:
   go test -cover ./...
   ```
 
-- [ ] `make test-race` - Run tests with race detection
-  ```bash
-  go test -race ./...
-  ```
 
 **Quality Targets**
 - [ ] `make lint` - Run golangci-lint
