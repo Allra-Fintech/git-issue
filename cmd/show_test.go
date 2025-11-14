@@ -16,38 +16,60 @@ func setupShowTest(t *testing.T) (string, func()) {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
 
+	// Capture original directory
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
+
+	// Set up cleanup to always restore directory
+	cleanup := func() {
+		_ = os.Chdir(originalDir)
+		_ = os.RemoveAll(tmpDir)
+	}
+
 	// Change to temp directory
-	originalDir, _ := os.Getwd()
-	_ = os.Chdir(tmpDir)
+	if err := os.Chdir(tmpDir); err != nil {
+		cleanup()
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
 
 	// Initialize repo
 	if err := pkg.InitializeRepo(); err != nil {
+		cleanup()
 		t.Fatalf("Failed to initialize repo: %v", err)
 	}
 
 	// Create test issues
 	createAssignee = "alice"
 	createLabels = []string{"bug", "backend"}
-	_ = runCreate(nil, []string{"Fix authentication bug"})
+	if err := runCreate(nil, []string{"Fix authentication bug"}); err != nil {
+		cleanup()
+		t.Fatalf("Failed to create issue 1: %v", err)
+	}
 
 	createAssignee = "bob"
 	createLabels = []string{"feature"}
-	_ = runCreate(nil, []string{"Add user dashboard"})
+	if err := runCreate(nil, []string{"Add user dashboard"}); err != nil {
+		cleanup()
+		t.Fatalf("Failed to create issue 2: %v", err)
+	}
 
 	createAssignee = ""
 	createLabels = []string{}
-	_ = runCreate(nil, []string{"Update documentation"})
+	if err := runCreate(nil, []string{"Update documentation"}); err != nil {
+		cleanup()
+		t.Fatalf("Failed to create issue 3: %v", err)
+	}
 
 	// Reset flags
 	createAssignee = ""
 	createLabels = []string{}
 
 	// Move one issue to closed
-	_ = pkg.MoveIssue("002", pkg.OpenDir, pkg.ClosedDir)
-
-	cleanup := func() {
-		_ = os.Chdir(originalDir)
-		_ = os.RemoveAll(tmpDir)
+	if err := pkg.MoveIssue("002", pkg.OpenDir, pkg.ClosedDir); err != nil {
+		cleanup()
+		t.Fatalf("Failed to move issue to closed: %v", err)
 	}
 
 	return tmpDir, cleanup
@@ -65,9 +87,14 @@ func TestShowCommand(t *testing.T) {
 		}
 		defer func() { _ = os.RemoveAll(tmpDir) }()
 
-		originalDir, _ := os.Getwd()
-		_ = os.Chdir(tmpDir)
+		originalDir, err := os.Getwd()
+		if err != nil {
+			t.Fatalf("Failed to get current directory: %v", err)
+		}
 		defer func() { _ = os.Chdir(originalDir) }()
+		if err := os.Chdir(tmpDir); err != nil {
+			t.Fatalf("Failed to change to temp directory: %v", err)
+		}
 
 		err = runShow(nil, []string{"001"})
 		if err == nil {
@@ -228,9 +255,14 @@ func TestShowIssueWithBody(t *testing.T) {
 	}
 	defer func() { _ = os.RemoveAll(tmpDir) }()
 
-	originalDir, _ := os.Getwd()
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
 	defer func() { _ = os.Chdir(originalDir) }()
-	_ = os.Chdir(tmpDir)
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
 
 	if err := pkg.InitializeRepo(); err != nil {
 		t.Fatalf("Failed to initialize repo: %v", err)
@@ -306,9 +338,14 @@ func TestShowMultipleIssues(t *testing.T) {
 	}
 	defer func() { _ = os.RemoveAll(tmpDir) }()
 
-	originalDir, _ := os.Getwd()
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
 	defer func() { _ = os.Chdir(originalDir) }()
-	_ = os.Chdir(tmpDir)
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
 
 	if err := pkg.InitializeRepo(); err != nil {
 		t.Fatalf("Failed to initialize repo: %v", err)

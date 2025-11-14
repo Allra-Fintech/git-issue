@@ -17,9 +17,14 @@ func TestInitCommand(t *testing.T) {
 	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	// Change to temp directory
-	originalDir, _ := os.Getwd()
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
 	defer func() { _ = os.Chdir(originalDir) }()
-	_ = os.Chdir(tmpDir)
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
 
 	// Test successful initialization
 	t.Run("successful init", func(t *testing.T) {
@@ -83,9 +88,14 @@ func TestInitCommandIsolated(t *testing.T) {
 	}
 	defer func() { _ = os.RemoveAll(tmpDir) }()
 
-	originalDir, _ := os.Getwd()
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
 	defer func() { _ = os.Chdir(originalDir) }()
-	_ = os.Chdir(tmpDir)
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
 
 	// Verify .issues doesn't exist initially
 	if pkg.RepoExists() {

@@ -15,43 +15,13 @@ func setupListTest(t *testing.T) (string, func()) {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
 
-	// Change to temp directory
-	originalDir, _ := os.Getwd()
-	_ = os.Chdir(tmpDir)
-
-	// Initialize repo
-	if err := pkg.InitializeRepo(); err != nil {
-		t.Fatalf("Failed to initialize repo: %v", err)
+	// Capture original directory
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
 	}
 
-	// Create some test issues
-	createAssignee = "alice"
-	createLabels = []string{"bug", "backend"}
-	_ = runCreate(nil, []string{"Bug in authentication"})
-
-	createAssignee = "bob"
-	createLabels = []string{"feature", "frontend"}
-	_ = runCreate(nil, []string{"Add user dashboard"})
-
-	createAssignee = "alice"
-	createLabels = []string{"bug", "frontend"}
-	_ = runCreate(nil, []string{"Fix CSS styling"})
-
-	createAssignee = ""
-	createLabels = []string{"docs"}
-	_ = runCreate(nil, []string{"Update README"})
-
-	createAssignee = "charlie"
-	createLabels = []string{"feature", "backend"}
-	_ = runCreate(nil, []string{"API endpoint for users"})
-
-	// Reset flags
-	createAssignee = ""
-	createLabels = []string{}
-
-	// Move one issue to closed for testing
-	_ = pkg.MoveIssue("002", pkg.OpenDir, pkg.ClosedDir)
-
+	// Set up cleanup to always restore directory
 	cleanup := func() {
 		_ = os.Chdir(originalDir)
 		_ = os.RemoveAll(tmpDir)
@@ -60,6 +30,64 @@ func setupListTest(t *testing.T) (string, func()) {
 		listAssignee = ""
 		listLabel = ""
 		listStatus = ""
+	}
+
+	// Change to temp directory
+	if err := os.Chdir(tmpDir); err != nil {
+		cleanup()
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
+
+	// Initialize repo
+	if err := pkg.InitializeRepo(); err != nil {
+		cleanup()
+		t.Fatalf("Failed to initialize repo: %v", err)
+	}
+
+	// Create some test issues
+	createAssignee = "alice"
+	createLabels = []string{"bug", "backend"}
+	if err := runCreate(nil, []string{"Bug in authentication"}); err != nil {
+		cleanup()
+		t.Fatalf("Failed to create issue 1: %v", err)
+	}
+
+	createAssignee = "bob"
+	createLabels = []string{"feature", "frontend"}
+	if err := runCreate(nil, []string{"Add user dashboard"}); err != nil {
+		cleanup()
+		t.Fatalf("Failed to create issue 2: %v", err)
+	}
+
+	createAssignee = "alice"
+	createLabels = []string{"bug", "frontend"}
+	if err := runCreate(nil, []string{"Fix CSS styling"}); err != nil {
+		cleanup()
+		t.Fatalf("Failed to create issue 3: %v", err)
+	}
+
+	createAssignee = ""
+	createLabels = []string{"docs"}
+	if err := runCreate(nil, []string{"Update README"}); err != nil {
+		cleanup()
+		t.Fatalf("Failed to create issue 4: %v", err)
+	}
+
+	createAssignee = "charlie"
+	createLabels = []string{"feature", "backend"}
+	if err := runCreate(nil, []string{"API endpoint for users"}); err != nil {
+		cleanup()
+		t.Fatalf("Failed to create issue 5: %v", err)
+	}
+
+	// Reset flags
+	createAssignee = ""
+	createLabels = []string{}
+
+	// Move one issue to closed for testing
+	if err := pkg.MoveIssue("002", pkg.OpenDir, pkg.ClosedDir); err != nil {
+		cleanup()
+		t.Fatalf("Failed to move issue to closed: %v", err)
 	}
 
 	return tmpDir, cleanup
@@ -77,9 +105,14 @@ func TestListCommand(t *testing.T) {
 		}
 		defer func() { _ = os.RemoveAll(tmpDir) }()
 
-		originalDir, _ := os.Getwd()
-		_ = os.Chdir(tmpDir)
+		originalDir, err := os.Getwd()
+		if err != nil {
+			t.Fatalf("Failed to get current directory: %v", err)
+		}
 		defer func() { _ = os.Chdir(originalDir) }()
+		if err := os.Chdir(tmpDir); err != nil {
+			t.Fatalf("Failed to change to temp directory: %v", err)
+		}
 
 		err = runList(nil, []string{})
 		if err == nil {
@@ -362,9 +395,14 @@ func TestListEmptyRepo(t *testing.T) {
 	}
 	defer func() { _ = os.RemoveAll(tmpDir) }()
 
-	originalDir, _ := os.Getwd()
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
 	defer func() { _ = os.Chdir(originalDir) }()
-	_ = os.Chdir(tmpDir)
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
 
 	// Initialize but don't create any issues
 	if err := pkg.InitializeRepo(); err != nil {

@@ -18,9 +18,14 @@ func TestCreateCommand(t *testing.T) {
 	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	// Change to temp directory
-	originalDir, _ := os.Getwd()
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
 	defer func() { _ = os.Chdir(originalDir) }()
-	_ = os.Chdir(tmpDir)
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
 
 	// Test without initialization
 	t.Run("create without init", func(t *testing.T) {
@@ -234,9 +239,14 @@ func TestCreateCommandNoArgs(t *testing.T) {
 	}
 	defer func() { _ = os.RemoveAll(tmpDir) }()
 
-	originalDir, _ := os.Getwd()
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
 	defer func() { _ = os.Chdir(originalDir) }()
-	_ = os.Chdir(tmpDir)
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
 
 	// Initialize repo
 	if err := pkg.InitializeRepo(); err != nil {
@@ -270,9 +280,14 @@ func TestCreateIssueFile(t *testing.T) {
 	}
 	defer func() { _ = os.RemoveAll(tmpDir) }()
 
-	originalDir, _ := os.Getwd()
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
 	defer func() { _ = os.Chdir(originalDir) }()
-	_ = os.Chdir(tmpDir)
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
 
 	if err := pkg.InitializeRepo(); err != nil {
 		t.Fatalf("Failed to initialize repo: %v", err)
