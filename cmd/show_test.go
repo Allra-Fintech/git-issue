@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -317,7 +318,7 @@ func TestShowMultipleIssues(t *testing.T) {
 	for i := 1; i <= 10; i++ {
 		createAssignee = ""
 		createLabels = []string{}
-		err := runCreate(nil, []string{"Issue", string(rune('0' + i))})
+		err := runCreate(nil, []string{"Issue", fmt.Sprintf("%d", i)})
 		if err != nil {
 			t.Fatalf("Failed to create issue %d: %v", i, err)
 		}
