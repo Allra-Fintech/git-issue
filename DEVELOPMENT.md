@@ -27,6 +27,31 @@ make lint
 
 # Format code
 make fmt
+
+# Clean artifacts
+make clean
+
+# Install locally (default /usr/local/bin; override INSTALL_DIR if needed)
+make install
+```
+
+### Makefile Targets
+
+| Target | Description |
+| --- | --- |
+| `make build` | Build the CLI for the current platform with embedded version info |
+| `make build-all` | Cross-compile binaries for macOS (arm64/amd64) and Linux (amd64) |
+| `make test` / `make test-coverage` | Run the test suite (optionally with coverage) |
+| `make lint` | Run `golangci-lint` against the codebase |
+| `make fmt` | Format the tree with `go fmt ./...` |
+| `make clean` | Remove build artifacts and coverage reports |
+| `make install` | Build and install to `/usr/local/bin` (or custom `INSTALL_DIR`) |
+
+Override `VERSION` to embed a specific version string:
+
+```bash
+VERSION=v1.2.3 make build
+./git-issue --version
 ```
 
 **Note:** `golangci-lint` is tracked as a dev dependency in `tools.go` and doesn't need to be installed globally. The Makefile automatically runs it via `go run`.
