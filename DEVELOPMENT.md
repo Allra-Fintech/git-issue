@@ -33,6 +33,11 @@ make clean
 
 # Install locally (default ~/.local/bin; override INSTALL_DIR if needed)
 make install
+
+# Download latest CI-built binaries (requires repo access):
+# 1. git pull origin main
+# 2. Go to GitHub → Actions → "Build binaries" workflow
+# 3. Download gi-binaries-<sha> artifact for your platform
 ```
 
 ### Makefile Targets
