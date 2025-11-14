@@ -16,7 +16,8 @@ Build a lightweight CLI tool for managing issues as Markdown files in git reposi
 
 ### Phase 1: Project Setup & Core Infrastructure
 
-**1.1 Initialize Go Project**
+#### 1.1 Initialize Go Project
+
 - Create Go module: `go mod init github.com/Allra-Fintech/git-issue`
 - Set up project structure:
   - `main.go` - Entry point
@@ -28,7 +29,8 @@ Build a lightweight CLI tool for managing issues as Markdown files in git reposi
   - `github.com/fatih/color` - Terminal colors
   - `github.com/olekukonko/tablewriter` - Table formatting
 
-**1.2 Define Core Data Structures (pkg/issue.go)**
+#### 1.2 Define Core Data Structures (pkg/issue.go)
+
 - `Issue` struct with fields:
   - `ID` (string)
   - `Title` (string)
@@ -41,7 +43,8 @@ Build a lightweight CLI tool for managing issues as Markdown files in git reposi
 
 ### Phase 2: Storage & File System Operations
 
-**2.1 Implement Storage Layer (pkg/storage.go)**
+#### 2.1 Implement Storage Layer (pkg/storage.go)
+
 - `InitializeRepo()` - Create `.issues/` directory structure
 - `GetNextID()` - Read and increment counter
 - `SaveIssue()` - Write issue to appropriate directory
@@ -50,7 +53,8 @@ Build a lightweight CLI tool for managing issues as Markdown files in git reposi
 - `ListIssues(status)` - Get all issues from a directory
 - `FindIssueFile(id)` - Search for issue file by ID pattern
 
-**2.2 Implement Parser (pkg/parser.go)**
+#### 2.2 Implement Parser (pkg/parser.go)
+
 - `ParseMarkdown(content)` - Parse YAML frontmatter + Markdown body
 - `SerializeIssue(issue)` - Convert Issue struct to Markdown with frontmatter
 - Slug generation from title (e.g., "Fix Bug" → "fix-bug")
