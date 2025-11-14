@@ -66,7 +66,7 @@ func runShow(cmd *cobra.Command, args []string) error {
 	fmt.Println()
 
 	// Status
-	statusStr := status
+	var statusStr string
 	if status == "open" {
 		statusStr = green(status)
 	} else {

@@ -63,7 +63,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	// Display success message
 	green := color.New(color.FgGreen, color.Bold)
 	fmt.Print("✓ Created issue ")
-	green.Printf("#%s", issue.ID)
+	_, _ = green.Printf("#%s", issue.ID)
 	fmt.Printf(": %s\n", issue.Title)
 	fmt.Println()
 

@@ -17,7 +17,7 @@ func setupShowTest(t *testing.T) (string, func()) {
 
 	// Change to temp directory
 	originalDir, _ := os.Getwd()
-	os.Chdir(tmpDir)
+	_ = os.Chdir(tmpDir)
 
 	// Initialize repo
 	if err := pkg.InitializeRepo(); err != nil {
@@ -27,26 +27,26 @@ func setupShowTest(t *testing.T) (string, func()) {
 	// Create test issues
 	createAssignee = "alice"
 	createLabels = []string{"bug", "backend"}
-	runCreate(nil, []string{"Fix authentication bug"})
+	_ = runCreate(nil, []string{"Fix authentication bug"})
 
 	createAssignee = "bob"
 	createLabels = []string{"feature"}
-	runCreate(nil, []string{"Add user dashboard"})
+	_ = runCreate(nil, []string{"Add user dashboard"})
 
 	createAssignee = ""
 	createLabels = []string{}
-	runCreate(nil, []string{"Update documentation"})
+	_ = runCreate(nil, []string{"Update documentation"})
 
 	// Reset flags
 	createAssignee = ""
 	createLabels = []string{}
 
 	// Move one issue to closed
-	pkg.MoveIssue("002", pkg.OpenDir, pkg.ClosedDir)
+	_ = pkg.MoveIssue("002", pkg.OpenDir, pkg.ClosedDir)
 
 	cleanup := func() {
-		os.Chdir(originalDir)
-		os.RemoveAll(tmpDir)
+		_ = os.Chdir(originalDir)
+		_ = os.RemoveAll(tmpDir)
 	}
 
 	return tmpDir, cleanup
@@ -62,11 +62,11 @@ func TestShowCommand(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to create temp dir: %v", err)
 		}
-		defer os.RemoveAll(tmpDir)
+		defer func() { _ = os.RemoveAll(tmpDir) }()
 
 		originalDir, _ := os.Getwd()
-		os.Chdir(tmpDir)
-		defer os.Chdir(originalDir)
+		_ = os.Chdir(tmpDir)
+		defer func() { _ = os.Chdir(originalDir) }()
 
 		err = runShow(nil, []string{"001"})
 		if err == nil {
@@ -225,11 +225,11 @@ func TestShowIssueWithBody(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	originalDir, _ := os.Getwd()
-	defer os.Chdir(originalDir)
-	os.Chdir(tmpDir)
+	defer func() { _ = os.Chdir(originalDir) }()
+	_ = os.Chdir(tmpDir)
 
 	if err := pkg.InitializeRepo(); err != nil {
 		t.Fatalf("Failed to initialize repo: %v", err)
@@ -303,11 +303,11 @@ func TestShowMultipleIssues(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	originalDir, _ := os.Getwd()
-	defer os.Chdir(originalDir)
-	os.Chdir(tmpDir)
+	defer func() { _ = os.Chdir(originalDir) }()
+	_ = os.Chdir(tmpDir)
 
 	if err := pkg.InitializeRepo(); err != nil {
 		t.Fatalf("Failed to initialize repo: %v", err)

@@ -17,7 +17,7 @@ func setupListTest(t *testing.T) (string, func()) {
 
 	// Change to temp directory
 	originalDir, _ := os.Getwd()
-	os.Chdir(tmpDir)
+	_ = os.Chdir(tmpDir)
 
 	// Initialize repo
 	if err := pkg.InitializeRepo(); err != nil {
@@ -27,34 +27,34 @@ func setupListTest(t *testing.T) (string, func()) {
 	// Create some test issues
 	createAssignee = "alice"
 	createLabels = []string{"bug", "backend"}
-	runCreate(nil, []string{"Bug in authentication"})
+	_ = runCreate(nil, []string{"Bug in authentication"})
 
 	createAssignee = "bob"
 	createLabels = []string{"feature", "frontend"}
-	runCreate(nil, []string{"Add user dashboard"})
+	_ = runCreate(nil, []string{"Add user dashboard"})
 
 	createAssignee = "alice"
 	createLabels = []string{"bug", "frontend"}
-	runCreate(nil, []string{"Fix CSS styling"})
+	_ = runCreate(nil, []string{"Fix CSS styling"})
 
 	createAssignee = ""
 	createLabels = []string{"docs"}
-	runCreate(nil, []string{"Update README"})
+	_ = runCreate(nil, []string{"Update README"})
 
 	createAssignee = "charlie"
 	createLabels = []string{"feature", "backend"}
-	runCreate(nil, []string{"API endpoint for users"})
+	_ = runCreate(nil, []string{"API endpoint for users"})
 
 	// Reset flags
 	createAssignee = ""
 	createLabels = []string{}
 
 	// Move one issue to closed for testing
-	pkg.MoveIssue("002", pkg.OpenDir, pkg.ClosedDir)
+	_ = pkg.MoveIssue("002", pkg.OpenDir, pkg.ClosedDir)
 
 	cleanup := func() {
-		os.Chdir(originalDir)
-		os.RemoveAll(tmpDir)
+		_ = os.Chdir(originalDir)
+		_ = os.RemoveAll(tmpDir)
 		// Reset list flags
 		listAll = false
 		listAssignee = ""
@@ -75,11 +75,11 @@ func TestListCommand(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to create temp dir: %v", err)
 		}
-		defer os.RemoveAll(tmpDir)
+		defer func() { _ = os.RemoveAll(tmpDir) }()
 
 		originalDir, _ := os.Getwd()
-		os.Chdir(tmpDir)
-		defer os.Chdir(originalDir)
+		_ = os.Chdir(tmpDir)
+		defer func() { _ = os.Chdir(originalDir) }()
 
 		err = runList(nil, []string{})
 		if err == nil {
@@ -360,11 +360,11 @@ func TestListEmptyRepo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	originalDir, _ := os.Getwd()
-	defer os.Chdir(originalDir)
-	os.Chdir(tmpDir)
+	defer func() { _ = os.Chdir(originalDir) }()
+	_ = os.Chdir(tmpDir)
 
 	// Initialize but don't create any issues
 	if err := pkg.InitializeRepo(); err != nil {

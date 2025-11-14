@@ -52,11 +52,12 @@ func runList(cmd *cobra.Command, args []string) error {
 	var dirsToSearch []string
 	if listStatus != "" {
 		// Filter by specific status
-		if listStatus == "open" {
+		switch listStatus {
+		case "open":
 			dirsToSearch = []string{pkg.OpenDir}
-		} else if listStatus == "closed" {
+		case "closed":
 			dirsToSearch = []string{pkg.ClosedDir}
-		} else {
+		default:
 			return fmt.Errorf("invalid status: %s (must be 'open' or 'closed')", listStatus)
 		}
 	} else if listAll {
@@ -138,7 +139,7 @@ func runList(cmd *cobra.Command, args []string) error {
 		status := item.status
 
 		// Color-code status
-		statusStr := status
+		var statusStr string
 		if status == "open" {
 			statusStr = green(status)
 		} else {
