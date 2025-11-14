@@ -39,7 +39,12 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	}
 
 	// Join all args as title (in case title has spaces and wasn't quoted)
-	title := strings.Join(args, " ")
+	title := strings.TrimSpace(strings.Join(args, " "))
+
+	// Validate title is not empty
+	if title == "" {
+		return fmt.Errorf("issue title cannot be empty")
+	}
 
 	// Get next ID
 	id, err := pkg.GetNextID()
