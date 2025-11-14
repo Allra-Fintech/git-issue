@@ -308,6 +308,9 @@ make fmt
 
 ```
 git-issue/
+├── .github/
+│   └── workflows/
+│       └── ci.yml       # GitHub Actions CI workflow
 ├── cmd/
 │   ├── root.go          # Root command and global flags
 │   ├── init.go          # Initialize command
