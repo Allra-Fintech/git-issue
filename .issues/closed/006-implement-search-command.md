@@ -1,9 +1,11 @@
 ---
 id: "006"
 assignee: ""
-labels: [feature, cli]
+labels:
+    - feature
+    - cli
 created: 2025-11-14T00:00:00Z
-updated: 2025-11-14T00:00:00Z
+updated: 2025-11-14T16:37:07.481391+09:00
 ---
 
 # Implement Search Command
