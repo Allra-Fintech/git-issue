@@ -28,7 +28,9 @@ func setupTestRepo(t *testing.T) func() {
 
 	// Return cleanup function
 	return func() {
-		os.Chdir(originalDir)
+		if err := os.Chdir(originalDir); err != nil {
+			t.Errorf("failed to change back to original directory: %v", err)
+		}
 		os.RemoveAll(tmpDir)
 	}
 }
@@ -208,9 +210,15 @@ func TestListIssues(t *testing.T) {
 	issue3 := NewIssue(3, "Third Issue", "charlie", []string{"enhancement"})
 
 	// Save issues
-	SaveIssue(issue1, OpenDir)
-	SaveIssue(issue2, OpenDir)
-	SaveIssue(issue3, ClosedDir)
+	if err := SaveIssue(issue1, OpenDir); err != nil {
+		t.Fatal(err)
+	}
+	if err := SaveIssue(issue2, OpenDir); err != nil {
+		t.Fatal(err)
+	}
+	if err := SaveIssue(issue3, ClosedDir); err != nil {
+		t.Fatal(err)
+	}
 
 	// List open issues
 	openIssues, err := ListIssues(OpenDir)

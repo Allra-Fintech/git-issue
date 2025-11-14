@@ -280,21 +280,29 @@ git-issue open 005 --commit
 ### Build
 
 ```bash
+# Install dependencies (including dev tools)
+go mod download
+
 # Build for current platform
-go build -o git-issue
+make build
 
 # Build for all platforms (macOS ARM64/AMD64, Linux AMD64)
 make build-all
 
 # Run tests
-go test ./...
+make test
 
 # Run tests with coverage
-go test -cover ./...
+make test-coverage
 
-# Run linter
-golangci-lint run
+# Run linter (uses golangci-lint as a dev dependency, no global install needed)
+make lint
+
+# Format code
+make fmt
 ```
+
+**Note:** `golangci-lint` is tracked as a dev dependency in `tools.go` and doesn't need to be installed globally. The Makefile automatically runs it via `go run`.
 
 ### Project Structure
 
@@ -315,6 +323,7 @@ git-issue/
 │   ├── storage.go       # File system operations
 │   └── parser.go        # Markdown/YAML parsing
 ├── main.go
+├── tools.go             # Dev tool dependencies
 ├── go.mod
 ├── go.sum
 ├── Makefile

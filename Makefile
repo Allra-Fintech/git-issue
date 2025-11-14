@@ -1,4 +1,4 @@
-.PHONY: build build-all test test-coverage test-race lint fmt clean install help
+.PHONY: build build-all test test-coverage test-coverage-report lint fmt clean install help
 
 # Binary name
 BINARY_NAME=git-issue
@@ -38,7 +38,7 @@ test-coverage-report:
 # Run linter
 lint:
 	@echo "Running linter..."
-	golangci-lint run
+	go run github.com/golangci/golangci-lint/cmd/golangci-lint run
 
 # Format code
 fmt:
