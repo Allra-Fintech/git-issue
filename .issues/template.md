@@ -1,6 +1,5 @@
 ---
 id: ""
-status: open
 assignee: ""
 labels: []
 created:

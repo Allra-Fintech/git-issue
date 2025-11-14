@@ -1,6 +1,5 @@
 ---
 id: "004"
-status: open
 assignee: ""
 labels: [feature, cli]
 created: 2025-11-14T00:00:00Z

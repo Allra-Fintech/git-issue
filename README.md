@@ -5,8 +5,8 @@ A lightweight CLI tool for managing issues as Markdown files in your git reposit
 ## Features
 
 - 📝 Create, list, and manage issues as Markdown files
-- 🏷️ Support for labels, assignees, and status tracking
-- 🔍 Search and filter issues
+- 🏷️ Support for labels and assignees
+- 🔍 Search and filter issues (status determined by directory: open/ or closed/)
 - 🤖 AI-friendly format with structured frontmatter
 - 🔄 Git-native workflow - all issues version controlled
 
@@ -192,8 +192,9 @@ If a user says "implement #001" or "fix issue 001":
 
 1. Search for the file matching the issue ID in `.issues/open/` or `.issues/closed/`
 2. Read the entire issue file to understand requirements
-3. Parse the YAML frontmatter for metadata (assignee, labels, status)
-4. Use the issue description and details to guide your implementation
+3. Parse the YAML frontmatter for metadata (assignee, labels)
+4. Note: Status is determined by directory location (open/ = open, closed/ = closed)
+5. Use the issue description and details to guide your implementation
 
 Example: For "#001", look for `.issues/open/001-*.md`
 
@@ -201,7 +202,7 @@ Example: For "#001", look for `.issues/open/001-*.md`
 
 - Always read the full issue before implementing
 - Reference the issue file path in your responses
-- Update issue status by moving files between open/ and closed/ directories
+- Status is determined by directory: move files between open/ and closed/ to change status
 - Maintain the YAML frontmatter structure when editing issues
 ```
 

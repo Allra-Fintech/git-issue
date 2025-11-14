@@ -1,6 +1,5 @@
 ---
 id: "007"
-status: open
 assignee: ""
 labels: [testing, quality]
 created: 2025-11-14T00:00:00Z
