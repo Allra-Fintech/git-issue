@@ -173,13 +173,19 @@ Example AI queries:
 # Create issue for current work
 git-issue create "Implement user profile API"
 
-# Reference in commits
+# Work on the implementation
 git commit -m "Add profile endpoint (issue #005)"
 
-# Close when done
+# Close issue and automatically commit the change
+git-issue close 005 --commit
+
+# Or manually manage the commit
 git-issue close 005
 git add .issues/
 git commit -m "Close issue #005"
+
+# Reopen issue with automatic commit
+git-issue open 005 --commit
 ```
 
 ## Commands Reference
