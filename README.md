@@ -117,9 +117,6 @@ sudo mv git-issue /usr/local/bin/
 curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/git-issue-linux-amd64 -o git-issue
 chmod +x git-issue
 sudo mv git-issue /usr/local/bin/
-
-# Windows
-# Download git-issue-windows-amd64.exe and add to PATH
 ```
 
 ### From Source
@@ -292,7 +289,7 @@ git-issue open 005 --commit
 # Build for current platform
 go build -o git-issue
 
-# Build for all platforms
+# Build for all platforms (macOS ARM64/AMD64, Linux AMD64)
 make build-all
 
 # Run tests
