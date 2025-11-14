@@ -40,7 +40,7 @@ test-coverage-report:
 # Run linter
 lint:
 	@echo "Running golangci-lint..."
-	golangci-lint run
+	$(GO) run github.com/golangci/golangci-lint/cmd/golangci-lint run
 
 # Format code
 fmt:
