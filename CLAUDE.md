@@ -142,14 +142,6 @@ All commands use Cobra. Global flag: `-h, --help`
 - `close/open`: `--commit` (auto-commit to git)
 - `search`: `--status <status>`, `--assignee <name>`, `--label <label>`
 
-### Interactive Mode
-
-`git-issue create` with no title argument should prompt for:
-1. Title
-2. Description (multi-line)
-3. Assignee (optional)
-4. Labels (optional, comma-separated)
-
 ## Testing Requirements
 
 - Unit tests for storage operations (file I/O, counter increment)

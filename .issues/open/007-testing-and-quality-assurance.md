@@ -46,7 +46,6 @@ Implement comprehensive test coverage and quality assurance for the git-issue CL
 
 - [ ] Test full workflow: init → create → list → show → close → list
 - [ ] Test git integration with `--commit` flag
-- [ ] Test interactive create mode
 - [ ] Test search with various filters
 - [ ] Test edit command workflow
 - [ ] Test concurrent issue creation (counter safety)

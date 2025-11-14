@@ -38,13 +38,6 @@ git-issue create "Fix Redis connection timeout"
 git-issue create "Fix Redis connection timeout" --assignee jonghun --label bug --label backend
 ```
 
-Interactive mode:
-
-```bash
-git-issue create
-# Prompts for title, description, assignee, labels
-```
-
 ### List issues
 
 ```bash
