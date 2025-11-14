@@ -95,22 +95,31 @@ gi search "authentication" --status open
 
 Download the latest binary for your platform from the [releases page](https://github.com/Allra-Fintech/git-issue/releases):
 
+#### macOS (Apple Silicon)
+
 ```bash
-# macOS (ARM)
 curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/gi-darwin-arm64 -o gi
 chmod +x gi
 sudo mv gi /usr/local/bin/
+```
 
-# macOS (Intel)
+#### macOS (Intel)
+
+```bash
 curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/gi-darwin-amd64 -o gi
 chmod +x gi
 sudo mv gi /usr/local/bin/
+```
 
-# Linux
+#### Linux (x86_64)
+
+```bash
 curl -L https://github.com/Allra-Fintech/git-issue/releases/latest/download/gi-linux-amd64 -o gi
 chmod +x gi
 sudo mv gi /usr/local/bin/
 ```
+
+> **Note:** Make sure `/usr/local/bin` is in your `PATH` so that typing `gi` runs the binary you just installed. If it is missing, add `export PATH="/usr/local/bin:$PATH"` to your shell profile (e.g. `~/.zshrc`, `~/.bashrc`) or move the binary to another directory that is already on your `PATH`.
 
 ### From Source
 
