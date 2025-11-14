@@ -1,9 +1,11 @@
 ---
 id: "005"
 assignee: ""
-labels: [feature, cli]
+labels:
+    - feature
+    - cli
 created: 2025-11-14T00:00:00Z
-updated: 2025-11-14T00:00:00Z
+updated: 2025-11-14T06:21:06.209059411Z
 ---
 
 # Implement Issue Management Commands
