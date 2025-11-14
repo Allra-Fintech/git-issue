@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const version = "0.1.0"
+var version = "dev"
 
 var rootCmd = &cobra.Command{
 	Use:   "git-issue",
@@ -22,9 +22,22 @@ func Execute() error {
 }
 
 func init() {
-	// Set custom version template
-	rootCmd.SetVersionTemplate(fmt.Sprintf("git-issue version %s\n", version))
+	setVersionTemplate()
 
 	// Enable completion command
 	rootCmd.CompletionOptions.DisableDefaultCmd = false
+}
+
+// SetVersion overrides the default CLI version (useful for ldflags injection).
+func SetVersion(v string) {
+	if v == "" {
+		return
+	}
+	version = v
+	rootCmd.Version = version
+	setVersionTemplate()
+}
+
+func setVersionTemplate() {
+	rootCmd.SetVersionTemplate(fmt.Sprintf("git-issue version %s\n", version))
 }

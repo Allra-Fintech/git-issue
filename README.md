@@ -127,6 +127,10 @@ cd git-issue
 go build -o git-issue
 ```
 
+### Release Process
+
+See [RELEASE.md](RELEASE.md) for the full release checklist, tagging instructions, and binary verification steps.
+
 ### Shell Completion
 
 #### Zsh (macOS)

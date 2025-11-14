@@ -1,9 +1,12 @@
 ---
 id: "008"
 assignee: ""
-labels: [build, release, devops]
+labels:
+    - build
+    - release
+    - devops
 created: 2025-11-14T00:00:00Z
-updated: 2025-11-14T00:00:00Z
+updated: 2025-11-14T17:13:30.625812+09:00
 ---
 
 # Build System and Release
