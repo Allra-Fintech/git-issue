@@ -272,14 +272,10 @@ git-issue/
 │   ├── edit.go          # Edit command
 │   └── search.go        # Search command
 ├── pkg/
-│   ├── issue/
-│   │   ├── issue.go     # Issue struct and operations
-│   │   ├── storage.go   # File system operations
-│   │   └── parser.go    # Markdown/YAML parsing
-│   ├── config/
-│   │   └── config.go    # Configuration management
-│   └── ui/
-│       └── format.go    # Output formatting and colors
+│   └── issue/
+│       ├── issue.go     # Issue struct and operations
+│       ├── storage.go   # File system operations
+│       └── parser.go    # Markdown/YAML parsing
 ├── main.go
 ├── go.mod
 ├── go.sum
