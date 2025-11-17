@@ -60,14 +60,22 @@ func TestCreateCommand(t *testing.T) {
 			t.Fatalf("Failed to read open directory: %v", err)
 		}
 
-		if len(files) != 1 {
-			t.Errorf("Expected 1 issue file, found %d", len(files))
+		// Count only .md files (skip .keep)
+		var issueFiles []os.DirEntry
+		for _, f := range files {
+			if strings.HasSuffix(f.Name(), ".md") {
+				issueFiles = append(issueFiles, f)
+			}
+		}
+
+		if len(issueFiles) != 1 {
+			t.Errorf("Expected 1 issue file, found %d", len(issueFiles))
 		}
 
 		// Verify filename format
 		expectedPrefix := "001-"
-		if !strings.HasPrefix(files[0].Name(), expectedPrefix) {
-			t.Errorf("Expected filename to start with %q, got %q", expectedPrefix, files[0].Name())
+		if !strings.HasPrefix(issueFiles[0].Name(), expectedPrefix) {
+			t.Errorf("Expected filename to start with %q, got %q", expectedPrefix, issueFiles[0].Name())
 		}
 
 		// Load and verify issue

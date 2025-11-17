@@ -36,6 +36,21 @@ func InitializeRepo() error {
 		return fmt.Errorf("failed to create %s directory: %w", closedPath, err)
 	}
 
+	// Create .keep files to ensure directories are tracked in git
+	openKeepPath := filepath.Join(openPath, ".keep")
+	if _, err := os.Stat(openKeepPath); os.IsNotExist(err) {
+		if err := os.WriteFile(openKeepPath, []byte(""), 0644); err != nil {
+			return fmt.Errorf("failed to create .keep file in open directory: %w", err)
+		}
+	}
+
+	closedKeepPath := filepath.Join(closedPath, ".keep")
+	if _, err := os.Stat(closedKeepPath); os.IsNotExist(err) {
+		if err := os.WriteFile(closedKeepPath, []byte(""), 0644); err != nil {
+			return fmt.Errorf("failed to create .keep file in closed directory: %w", err)
+		}
+	}
+
 	// Initialize counter file
 	counterPath := filepath.Join(IssuesDir, CounterFile)
 	if _, err := os.Stat(counterPath); os.IsNotExist(err) {
