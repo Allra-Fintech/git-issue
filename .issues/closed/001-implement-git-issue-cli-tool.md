@@ -1,9 +1,11 @@
 ---
 id: "001"
 assignee: ""
-labels: [feature, enhancement]
+labels:
+    - feature
+    - enhancement
 created: 2025-11-14T00:00:00Z
-updated: 2025-11-14T00:00:00Z
+updated: 2025-11-17T10:16:58.194644+09:00
 ---
 
 # Implement git-issue CLI Tool
