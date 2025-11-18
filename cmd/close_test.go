@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"strings"
 	"testing"
 
@@ -115,5 +116,128 @@ func TestRunCloseCommitCreatesGitCommit(t *testing.T) {
 	lastMessage := gitLastCommitMessage(t, repoDir)
 	if lastMessage != "Close issue #001" {
 		t.Fatalf("unexpected commit message %q", lastMessage)
+	}
+}
+
+func TestRunClosePreservesFilenameWithKoreanTitle(t *testing.T) {
+	_, cleanup := setupCommandTestRepo(t)
+	defer cleanup()
+
+	// Create issue with English title
+	if err := runCreate(nil, []string{"Initial English Title"}); err != nil {
+		t.Fatalf("runCreate() failed: %v", err)
+	}
+
+	// Get original filename
+	originalPath, _, err := pkg.FindIssueFile("001")
+	if err != nil {
+		t.Fatalf("failed to find issue: %v", err)
+	}
+
+	// Edit issue to have Korean title
+	issue, _, err := pkg.LoadIssue("001")
+	if err != nil {
+		t.Fatalf("failed to load issue: %v", err)
+	}
+	issue.Title = "한글 제목으로 변경"
+	content, err := pkg.SerializeIssue(issue)
+	if err != nil {
+		t.Fatalf("failed to serialize issue: %v", err)
+	}
+	if err := os.WriteFile(originalPath, []byte(content), 0644); err != nil {
+		t.Fatalf("failed to write issue: %v", err)
+	}
+
+	// Close the issue
+	if err := runClose(nil, []string{"001"}); err != nil {
+		t.Fatalf("runClose() failed: %v", err)
+	}
+
+	// Verify issue is in closed directory with original filename
+	closedPath, dir, err := pkg.FindIssueFile("001")
+	if err != nil {
+		t.Fatalf("failed to find closed issue: %v", err)
+	}
+	if dir != pkg.ClosedDir {
+		t.Fatalf("issue should be in closed dir, got %s", dir)
+	}
+
+	// Verify filename was preserved (contains "initial-english-title")
+	if !strings.Contains(closedPath, "initial-english-title") {
+		t.Errorf("filename should be preserved, got %s", closedPath)
+	}
+
+	// Verify no malformed files like "001-.md" were created
+	openFiles, _ := pkg.ListIssues(pkg.OpenDir)
+	closedFiles, _ := pkg.ListIssues(pkg.ClosedDir)
+
+	if len(openFiles) != 0 {
+		t.Errorf("open directory should be empty, found %d files", len(openFiles))
+	}
+	if len(closedFiles) != 1 {
+		t.Errorf("closed directory should have exactly 1 file, found %d", len(closedFiles))
+	}
+}
+
+func TestRunClosePreservesFilenameWhenTitleModified(t *testing.T) {
+	_, cleanup := setupCommandTestRepo(t)
+	defer cleanup()
+
+	// Create issue
+	if err := runCreate(nil, []string{"Original Title"}); err != nil {
+		t.Fatalf("runCreate() failed: %v", err)
+	}
+
+	// Get original filename
+	originalPath, _, err := pkg.FindIssueFile("001")
+	if err != nil {
+		t.Fatalf("failed to find issue: %v", err)
+	}
+
+	// Edit issue to have completely different title
+	issue, _, err := pkg.LoadIssue("001")
+	if err != nil {
+		t.Fatalf("failed to load issue: %v", err)
+	}
+	issue.Title = "Completely Different Modified Title"
+	content, err := pkg.SerializeIssue(issue)
+	if err != nil {
+		t.Fatalf("failed to serialize issue: %v", err)
+	}
+	if err := os.WriteFile(originalPath, []byte(content), 0644); err != nil {
+		t.Fatalf("failed to write issue: %v", err)
+	}
+
+	// Close the issue
+	if err := runClose(nil, []string{"001"}); err != nil {
+		t.Fatalf("runClose() failed: %v", err)
+	}
+
+	// Verify issue is in closed directory with original filename
+	closedPath, dir, err := pkg.FindIssueFile("001")
+	if err != nil {
+		t.Fatalf("failed to find closed issue: %v", err)
+	}
+	if dir != pkg.ClosedDir {
+		t.Fatalf("issue should be in closed dir, got %s", dir)
+	}
+
+	// Verify filename was preserved (contains "original-title", not "completely-different")
+	if !strings.Contains(closedPath, "original-title") {
+		t.Errorf("original filename should be preserved, got %s", closedPath)
+	}
+	if strings.Contains(closedPath, "completely-different") {
+		t.Errorf("filename should not change to modified title, got %s", closedPath)
+	}
+
+	// Verify no duplicate files were created
+	openFiles, _ := pkg.ListIssues(pkg.OpenDir)
+	closedFiles, _ := pkg.ListIssues(pkg.ClosedDir)
+
+	if len(openFiles) != 0 {
+		t.Errorf("open directory should be empty, found %d files", len(openFiles))
+	}
+	if len(closedFiles) != 1 {
+		t.Errorf("closed directory should have exactly 1 file, found %d", len(closedFiles))
 	}
 }

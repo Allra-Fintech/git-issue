@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"strings"
 	"testing"
 
@@ -134,5 +135,132 @@ func TestRunOpenCommitCreatesGitCommit(t *testing.T) {
 	lastMessage := gitLastCommitMessage(t, repoDir)
 	if lastMessage != "Reopen issue #001" {
 		t.Fatalf("unexpected commit message %q", lastMessage)
+	}
+}
+
+func TestRunOpenPreservesFilenameWithKoreanTitle(t *testing.T) {
+	_, cleanup := setupCommandTestRepo(t)
+	defer cleanup()
+
+	// Create issue with English title
+	if err := runCreate(nil, []string{"Initial English Title"}); err != nil {
+		t.Fatalf("runCreate() failed: %v", err)
+	}
+
+	// Get original filename
+	originalPath, _, err := pkg.FindIssueFile("001")
+	if err != nil {
+		t.Fatalf("failed to find issue: %v", err)
+	}
+
+	// Edit issue to have Korean title
+	issue, _, err := pkg.LoadIssue("001")
+	if err != nil {
+		t.Fatalf("failed to load issue: %v", err)
+	}
+	issue.Title = "한글 제목으로 변경"
+	content, err := pkg.SerializeIssue(issue)
+	if err != nil {
+		t.Fatalf("failed to serialize issue: %v", err)
+	}
+	if err := os.WriteFile(originalPath, []byte(content), 0644); err != nil {
+		t.Fatalf("failed to write issue: %v", err)
+	}
+
+	// Move to closed, then reopen
+	forceMoveIssueToClosed(t, "001")
+
+	if err := runOpen(nil, []string{"001"}); err != nil {
+		t.Fatalf("runOpen() failed: %v", err)
+	}
+
+	// Verify issue is in open directory with original filename
+	openPath, dir, err := pkg.FindIssueFile("001")
+	if err != nil {
+		t.Fatalf("failed to find reopened issue: %v", err)
+	}
+	if dir != pkg.OpenDir {
+		t.Fatalf("issue should be in open dir, got %s", dir)
+	}
+
+	// Verify filename was preserved (contains "initial-english-title")
+	if !strings.Contains(openPath, "initial-english-title") {
+		t.Errorf("filename should be preserved, got %s", openPath)
+	}
+
+	// Verify no malformed files like "001-.md" were created
+	openFiles, _ := pkg.ListIssues(pkg.OpenDir)
+	closedFiles, _ := pkg.ListIssues(pkg.ClosedDir)
+
+	if len(openFiles) != 1 {
+		t.Errorf("open directory should have exactly 1 file, found %d", len(openFiles))
+	}
+	if len(closedFiles) != 0 {
+		t.Errorf("closed directory should be empty, found %d files", len(closedFiles))
+	}
+}
+
+func TestRunOpenPreservesFilenameWhenTitleModified(t *testing.T) {
+	_, cleanup := setupCommandTestRepo(t)
+	defer cleanup()
+
+	// Create issue
+	if err := runCreate(nil, []string{"Original Title"}); err != nil {
+		t.Fatalf("runCreate() failed: %v", err)
+	}
+
+	// Get original filename
+	originalPath, _, err := pkg.FindIssueFile("001")
+	if err != nil {
+		t.Fatalf("failed to find issue: %v", err)
+	}
+
+	// Edit issue to have completely different title
+	issue, _, err := pkg.LoadIssue("001")
+	if err != nil {
+		t.Fatalf("failed to load issue: %v", err)
+	}
+	issue.Title = "Completely Different Modified Title"
+	content, err := pkg.SerializeIssue(issue)
+	if err != nil {
+		t.Fatalf("failed to serialize issue: %v", err)
+	}
+	if err := os.WriteFile(originalPath, []byte(content), 0644); err != nil {
+		t.Fatalf("failed to write issue: %v", err)
+	}
+
+	// Move to closed, then reopen
+	forceMoveIssueToClosed(t, "001")
+
+	if err := runOpen(nil, []string{"001"}); err != nil {
+		t.Fatalf("runOpen() failed: %v", err)
+	}
+
+	// Verify issue is in open directory with original filename
+	openPath, dir, err := pkg.FindIssueFile("001")
+	if err != nil {
+		t.Fatalf("failed to find reopened issue: %v", err)
+	}
+	if dir != pkg.OpenDir {
+		t.Fatalf("issue should be in open dir, got %s", dir)
+	}
+
+	// Verify filename was preserved (contains "original-title", not "completely-different")
+	if !strings.Contains(openPath, "original-title") {
+		t.Errorf("original filename should be preserved, got %s", openPath)
+	}
+	if strings.Contains(openPath, "completely-different") {
+		t.Errorf("filename should not change to modified title, got %s", openPath)
+	}
+
+	// Verify no duplicate files were created
+	openFiles, _ := pkg.ListIssues(pkg.OpenDir)
+	closedFiles, _ := pkg.ListIssues(pkg.ClosedDir)
+
+	if len(openFiles) != 1 {
+		t.Errorf("open directory should have exactly 1 file, found %d", len(openFiles))
+	}
+	if len(closedFiles) != 0 {
+		t.Errorf("closed directory should be empty, found %d files", len(closedFiles))
 	}
 }
