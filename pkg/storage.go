@@ -162,7 +162,7 @@ func LoadIssue(id string) (*Issue, string, error) {
 	return issue, dir, nil
 }
 
-// MoveIssue moves an issue file between directories
+// MoveIssue moves an issue file between directories and updates the timestamp
 func MoveIssue(id string, fromDir, toDir string) error {
 	// Find the issue file
 	oldPath, currentDir, err := FindIssueFile(id)
@@ -175,13 +175,35 @@ func MoveIssue(id string, fromDir, toDir string) error {
 		return fmt.Errorf("issue %s is in %s, not %s", id, currentDir, fromDir)
 	}
 
-	// Generate new path
+	// Generate new path (filename stays the same)
 	filename := filepath.Base(oldPath)
 	newPath := filepath.Join(IssuesDir, toDir, filename)
 
 	// Move file atomically
 	if err := os.Rename(oldPath, newPath); err != nil {
 		return fmt.Errorf("failed to move issue file: %w", err)
+	}
+
+	// Update timestamp after successful move
+	data, err := os.ReadFile(newPath)
+	if err != nil {
+		return fmt.Errorf("failed to read issue file: %w", err)
+	}
+
+	issue, err := ParseMarkdown(string(data))
+	if err != nil {
+		return fmt.Errorf("failed to parse issue: %w", err)
+	}
+
+	issue.Updated = time.Now()
+
+	content, err := SerializeIssue(issue)
+	if err != nil {
+		return fmt.Errorf("failed to serialize issue: %w", err)
+	}
+
+	if err := os.WriteFile(newPath, []byte(content), 0644); err != nil {
+		return fmt.Errorf("failed to write issue file: %w", err)
 	}
 
 	return nil
