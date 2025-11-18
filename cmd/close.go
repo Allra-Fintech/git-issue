@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"time"
 
 	"github.com/Allra-Fintech/git-issue/pkg"
 	"github.com/spf13/cobra"
@@ -28,8 +27,8 @@ func init() {
 func runClose(cmd *cobra.Command, args []string) error {
 	issueID := args[0]
 
-	// Load the issue
-	issue, currentDir, err := pkg.LoadIssue(issueID)
+	// Load the issue to check its status
+	_, currentDir, err := pkg.LoadIssue(issueID)
 	if err != nil {
 		return fmt.Errorf("failed to load issue: %w", err)
 	}
@@ -39,15 +38,7 @@ func runClose(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("issue #%s is already closed", issueID)
 	}
 
-	// Update timestamp
-	issue.Updated = time.Now()
-
-	// Save the issue with updated timestamp
-	if err := pkg.SaveIssue(issue, pkg.OpenDir); err != nil {
-		return fmt.Errorf("failed to update issue: %w", err)
-	}
-
-	// Move issue from open to closed
+	// Move issue from open to closed (timestamp update included)
 	if err := pkg.MoveIssue(issueID, pkg.OpenDir, pkg.ClosedDir); err != nil {
 		return fmt.Errorf("failed to move issue: %w", err)
 	}

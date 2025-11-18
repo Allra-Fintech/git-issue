@@ -176,19 +176,34 @@ func TestMoveIssue(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// Get initial timestamp
+	issueBefore, _, err := LoadIssue("001")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Wait a bit to ensure timestamp difference
+	time.Sleep(10 * time.Millisecond)
+
 	// Move to closed
-	err := MoveIssue("001", OpenDir, ClosedDir)
+	err = MoveIssue("001", OpenDir, ClosedDir)
 	if err != nil {
 		t.Fatalf("MoveIssue() error = %v", err)
 	}
 
 	// Verify it's now in closed
-	_, dir, err := LoadIssue("001")
+	issueAfter, dir, err := LoadIssue("001")
 	if err != nil {
 		t.Fatalf("LoadIssue() error = %v", err)
 	}
 	if dir != ClosedDir {
 		t.Errorf("Issue dir = %q, want %q", dir, ClosedDir)
+	}
+
+	// Verify timestamp was updated
+	if !issueAfter.Updated.After(issueBefore.Updated) {
+		t.Errorf("Updated timestamp should be newer after move, before=%v after=%v",
+			issueBefore.Updated, issueAfter.Updated)
 	}
 
 	// Try to move from open again (should fail)
