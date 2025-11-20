@@ -3,6 +3,7 @@ package pkg
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -159,6 +160,50 @@ func TestSaveAndLoadIssue(t *testing.T) {
 	}
 	if loaded.Assignee != issue.Assignee {
 		t.Errorf("Assignee = %q, want %q", loaded.Assignee, issue.Assignee)
+	}
+}
+
+func TestSaveIssuePreservesExistingFilename(t *testing.T) {
+	cleanup := setupTestRepo(t)
+	defer cleanup()
+
+	if err := InitializeRepo(); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create initial issue
+	issue := NewIssue(1, "Original Title", "bob", []string{})
+	if err := SaveIssue(issue, OpenDir); err != nil {
+		t.Fatalf("SaveIssue() initial save error = %v", err)
+	}
+
+	// Change the title to something that would generate a different slug
+	issue.Title = "Completely Different Title After Edit"
+	if err := SaveIssue(issue, OpenDir); err != nil {
+		t.Fatalf("SaveIssue() second save error = %v", err)
+	}
+
+	// Ensure only one issue file exists and the filename was preserved
+	openDir := filepath.Join(IssuesDir, OpenDir)
+	entries, err := os.ReadDir(openDir)
+	if err != nil {
+		t.Fatalf("failed to read open dir: %v", err)
+	}
+
+	var issueFiles []string
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".md") {
+			continue
+		}
+		issueFiles = append(issueFiles, entry.Name())
+	}
+
+	if len(issueFiles) != 1 {
+		t.Fatalf("expected exactly 1 issue file, found %d: %v", len(issueFiles), issueFiles)
+	}
+
+	if !strings.Contains(issueFiles[0], "original-title") {
+		t.Fatalf("expected filename to contain original slug, got %s", issueFiles[0])
 	}
 }
 
