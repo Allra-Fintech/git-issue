@@ -179,6 +179,49 @@ func TestRunClosePreservesFilenameWithKoreanTitle(t *testing.T) {
 	}
 }
 
+func TestRunCloseAfterEditDoesNotCreateNewIssueFile(t *testing.T) {
+	_, cleanup := setupCommandTestRepo(t)
+	defer cleanup()
+
+	// Create issue
+	if err := runCreate(nil, []string{"Original Title"}); err != nil {
+		t.Fatalf("runCreate() failed: %v", err)
+	}
+
+	// Simulate editing the issue to change the title (mimics `gi edit`)
+	issue, dir, err := pkg.LoadIssue("001")
+	if err != nil {
+		t.Fatalf("failed to load issue: %v", err)
+	}
+	issue.Title = "Edited Title That Changes The Slug"
+	if err := pkg.SaveIssue(issue, dir); err != nil {
+		t.Fatalf("failed to save edited issue: %v", err)
+	}
+
+	// Close the issue
+	if err := runClose(nil, []string{"001"}); err != nil {
+		t.Fatalf("runClose() failed: %v", err)
+	}
+
+	// Verify no new files were created in open/
+	openFiles, _ := pkg.ListIssues(pkg.OpenDir)
+	if len(openFiles) != 0 {
+		t.Fatalf("open directory should be empty after closing, found %d issues", len(openFiles))
+	}
+
+	// Verify closed file uses the original filename
+	closedPath, dirAfter, err := pkg.FindIssueFile("001")
+	if err != nil {
+		t.Fatalf("failed to find closed issue: %v", err)
+	}
+	if dirAfter != pkg.ClosedDir {
+		t.Fatalf("issue should be in closed dir, got %s", dirAfter)
+	}
+	if !strings.Contains(closedPath, "original-title") {
+		t.Fatalf("expected filename to retain original slug, got %s", closedPath)
+	}
+}
+
 func TestRunClosePreservesFilenameWhenTitleModified(t *testing.T) {
 	_, cleanup := setupCommandTestRepo(t)
 	defer cleanup()

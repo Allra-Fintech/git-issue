@@ -120,10 +120,20 @@ func GetNextID() (int, error) {
 
 // SaveIssue writes an issue to the specified directory (open or closed)
 func SaveIssue(issue *Issue, dir string) error {
-	// Generate filename
-	slug := GenerateSlug(issue.Title)
-	filename := fmt.Sprintf("%s-%s.md", issue.ID, slug)
-	path := filepath.Join(IssuesDir, dir, filename)
+	var path string
+
+	// If the issue already exists in the target directory, preserve its existing filename
+	if existingPath, existingDir, err := FindIssueFile(issue.ID); err == nil {
+		if existingDir != dir {
+			return fmt.Errorf("issue %s exists in %s directory, cannot save to %s", issue.ID, existingDir, dir)
+		}
+		path = existingPath
+	} else {
+		// Generate a new filename only when the issue doesn't exist yet
+		slug := GenerateSlug(issue.Title)
+		filename := fmt.Sprintf("%s-%s.md", issue.ID, slug)
+		path = filepath.Join(IssuesDir, dir, filename)
+	}
 
 	// Serialize issue
 	content, err := SerializeIssue(issue)
