@@ -326,9 +326,52 @@ func GetClosedPath() string {
 	return filepath.Join(IssuesDir, ClosedDir)
 }
 
+// LoadTemplateBody reads the template file and extracts the body content (after title heading)
+func LoadTemplateBody() string {
+	templatePath := filepath.Join(IssuesDir, TemplateFile)
+
+	// Read template file
+	data, err := os.ReadFile(templatePath)
+	if err != nil {
+		// If template doesn't exist, return empty body
+		return ""
+	}
+
+	// Parse the template to extract body
+	content := string(data)
+	parts := strings.SplitN(content, "---", 3)
+	if len(parts) < 3 {
+		// Invalid template format, return empty
+		return ""
+	}
+
+	// Get everything after frontmatter
+	body := strings.TrimSpace(parts[2])
+
+	// Skip the title line (first # heading) and get everything after
+	lines := strings.Split(body, "\n")
+	for i, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "# ") {
+			// Return everything after the title line
+			if i+1 < len(lines) {
+				return strings.TrimSpace(strings.Join(lines[i+1:], "\n"))
+			}
+			return ""
+		}
+	}
+
+	// If no title found, return the whole body
+	return body
+}
+
 // NewIssue creates a new Issue with default values
 func NewIssue(id int, title, assignee string, labels []string) *Issue {
 	now := time.Now()
+
+	// Load template body
+	templateBody := LoadTemplateBody()
+
 	return &Issue{
 		ID:       FormatID(id),
 		Assignee: assignee,
@@ -336,6 +379,6 @@ func NewIssue(id int, title, assignee string, labels []string) *Issue {
 		Created:  now,
 		Updated:  now,
 		Title:    title,
-		Body:     "",
+		Body:     templateBody,
 	}
 }
