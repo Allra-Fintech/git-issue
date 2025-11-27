@@ -97,6 +97,7 @@ golangci-lint run
 ### Cross-Platform Builds
 
 The Makefile should support:
+
 ```bash
 make build           # Current platform
 make build-all       # macOS (ARM64/AMD64), Linux (AMD64)
@@ -136,6 +137,7 @@ make lint           # Run golangci-lint
 All commands use Cobra. Global flag: `-h, --help`
 
 **Command-specific flags:**
+
 - `create`: `--assignee <name>`, `--label <label>` (repeatable)
 - `list`: `--all`, `--assignee <name>`, `--label <label>`, `--status <status>`
 - `close/open`: `--commit` (auto-commit to git)
@@ -148,6 +150,7 @@ All commands use Cobra. Global flag: `-h, --help`
 - Integration tests for command workflows
 - Error cases: missing files, invalid IDs, non-git directories, malformed YAML
 - Target: >80% code coverage
+- run manual test by running the command in the `test/` directory which already gitignored
 
 ## Cross-Platform Considerations
 
