@@ -94,7 +94,7 @@ Describe the issue here...
 	return nil
 }
 
-// GetNextID reads and increments the counter
+// GetNextID reads and increments the counter, skipping any IDs that already exist
 func GetNextID() (int, error) {
 	counterPath := filepath.Join(IssuesDir, CounterFile)
 
@@ -109,13 +109,26 @@ func GetNextID() (int, error) {
 		return 0, fmt.Errorf("invalid counter value: %w", err)
 	}
 
-	// Write incremented value
-	nextID := currentID + 1
+	// Find the next available ID by checking if current ID exists
+	availableID := currentID
+	for {
+		formattedID := FormatID(availableID)
+		_, _, err := FindIssueFile(formattedID)
+		if err != nil {
+			// ID not found, so it's available
+			break
+		}
+		// ID exists (in either open or closed), try next one
+		availableID++
+	}
+
+	// Write the next ID after the one we're returning
+	nextID := availableID + 1
 	if err := os.WriteFile(counterPath, []byte(fmt.Sprintf("%d\n", nextID)), 0644); err != nil {
 		return 0, fmt.Errorf("failed to write counter: %w", err)
 	}
 
-	return currentID, nil
+	return availableID, nil
 }
 
 // SaveIssue writes an issue to the specified directory (open or closed)

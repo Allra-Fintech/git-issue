@@ -116,6 +116,111 @@ func TestGetNextID(t *testing.T) {
 	}
 }
 
+func TestGetNextIDSkipsOccupiedIDs(t *testing.T) {
+	cleanup := setupTestRepo(t)
+	defer cleanup()
+
+	if err := InitializeRepo(); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create and save issues with IDs 1, 2, 3
+	issue1 := NewIssue(1, "First Issue", "", nil)
+	issue2 := NewIssue(2, "Second Issue", "", nil)
+	issue3 := NewIssue(3, "Third Issue", "", nil)
+
+	if err := SaveIssue(issue1, OpenDir); err != nil {
+		t.Fatal(err)
+	}
+	if err := SaveIssue(issue2, ClosedDir); err != nil {
+		t.Fatal(err)
+	}
+	if err := SaveIssue(issue3, ClosedDir); err != nil {
+		t.Fatal(err)
+	}
+
+	// Set counter to 1 (which is occupied in open directory)
+	counterPath := filepath.Join(IssuesDir, CounterFile)
+	if err := os.WriteFile(counterPath, []byte("1\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// GetNextID should skip 1, 2, 3 and return 4
+	id, err := GetNextID()
+	if err != nil {
+		t.Fatalf("GetNextID() error = %v", err)
+	}
+	if id != 4 {
+		t.Errorf("GetNextID() = %d, want 4 (should skip occupied IDs 1-3)", id)
+	}
+
+	// Verify counter was updated to 5
+	data, err := os.ReadFile(counterPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.TrimSpace(string(data)) != "5" {
+		t.Errorf("Counter = %q, want %q", strings.TrimSpace(string(data)), "5")
+	}
+}
+
+func TestGetNextIDWithGapsInSequence(t *testing.T) {
+	cleanup := setupTestRepo(t)
+	defer cleanup()
+
+	if err := InitializeRepo(); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create issues with gaps: 1, 3, 5 (missing 2, 4)
+	issue1 := NewIssue(1, "First Issue", "", nil)
+	issue3 := NewIssue(3, "Third Issue", "", nil)
+	issue5 := NewIssue(5, "Fifth Issue", "", nil)
+
+	if err := SaveIssue(issue1, ClosedDir); err != nil {
+		t.Fatal(err)
+	}
+	if err := SaveIssue(issue3, OpenDir); err != nil {
+		t.Fatal(err)
+	}
+	if err := SaveIssue(issue5, ClosedDir); err != nil {
+		t.Fatal(err)
+	}
+
+	// Set counter to 1
+	counterPath := filepath.Join(IssuesDir, CounterFile)
+	if err := os.WriteFile(counterPath, []byte("1\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// GetNextID should find the first gap at ID 2
+	id, err := GetNextID()
+	if err != nil {
+		t.Fatalf("GetNextID() error = %v", err)
+	}
+	if id != 2 {
+		t.Errorf("GetNextID() = %d, want 2 (should find first gap)", id)
+	}
+
+	// Next call should find ID 4
+	id, err = GetNextID()
+	if err != nil {
+		t.Fatalf("GetNextID() error = %v", err)
+	}
+	if id != 4 {
+		t.Errorf("GetNextID() = %d, want 4 (should find second gap)", id)
+	}
+
+	// Next call should skip 5 and return 6
+	id, err = GetNextID()
+	if err != nil {
+		t.Fatalf("GetNextID() error = %v", err)
+	}
+	if id != 6 {
+		t.Errorf("GetNextID() = %d, want 6 (should skip occupied ID 5)", id)
+	}
+}
+
 func TestSaveAndLoadIssue(t *testing.T) {
 	cleanup := setupTestRepo(t)
 	defer cleanup()
