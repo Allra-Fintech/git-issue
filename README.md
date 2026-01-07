@@ -143,6 +143,7 @@ See [RELEASE.md](RELEASE.md) for the full release checklist, tagging instruction
 ### Shell Completion
 
 #### Zsh (macOS)
+
 ```bash
 gi completion zsh > $(brew --prefix)/share/zsh/site-functions/_gi
 ```
@@ -150,11 +151,13 @@ gi completion zsh > $(brew --prefix)/share/zsh/site-functions/_gi
 #### Bash
 
 **Linux:**
+
 ```bash
 gi completion bash > /etc/bash_completion.d/gi
 ```
 
 **macOS:**
+
 ```bash
 gi completion bash > $(brew --prefix)/etc/bash_completion.d/gi
 ```
@@ -205,7 +208,7 @@ For optimal AI agent integration, create instruction files in your repository ro
 
 ## Issue Management
 
-This project uses gi for managing issues as Markdown files.
+This project uses [gi](https://github.com/Allra-Fintech/git-issue) for managing issues as Markdown files.
 
 ### Finding Issues
 
