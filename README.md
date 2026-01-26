@@ -228,11 +228,22 @@ If a user says "implement #001" or "fix issue 001":
 
 Example: For "#001", look for `.issues/open/001-*.md`
 
+### Creating Issues
+
+Always use the `gi create` command instead of manually creating files:
+
+```bash
+gi create "Your issue title"
+gi create "Fix bug" --assignee username --label bug
+```
+
+**Never** create issue files directly - the command handles ID generation and formatting.
+
 ### Working with issues
 
 - Always read the full issue before implementing
 - Reference the issue file path in your responses
-- Status is determined by directory: move files between open/ and closed/ to change status
+- Use `gi close <id>` and `gi open <id>` to change issue status
 - Maintain the YAML frontmatter structure when editing issues
 ```
 

@@ -3,7 +3,7 @@ id: "020"
 assignee: ""
 labels: []
 created: 2026-01-26T11:37:46.674936+09:00
-updated: 2026-01-26T11:37:46.674936+09:00
+updated: 2026-01-26T12:21:38.526905+09:00
 ---
 
 # Update AI instructions to use gi create command instead of creating files directly
