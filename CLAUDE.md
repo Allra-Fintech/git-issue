@@ -46,6 +46,27 @@ git-issue/
 
 This project uses its own issue tracking system (dogfooding).
 
+### Creating Issues
+
+When creating a new issue, always use the `gi create` command instead of manually creating files:
+
+```bash
+# Create a new issue
+gi create "Your issue title here"
+
+# Create with assignee
+gi create "Fix login bug" --assignee username
+
+# Create with labels (can use multiple --label flags)
+gi create "Add dark mode" --label feature --label frontend
+```
+
+**Important:** Never create issue files directly by writing to `.issues/open/`. The `gi create` command:
+- Automatically generates the next issue ID from `.counter`
+- Creates the proper slug from the title
+- Sets up correct YAML frontmatter with timestamps
+- Ensures consistent file naming format
+
 ### Finding Issues
 
 When a user references an issue like "#001" or "issue 001":
