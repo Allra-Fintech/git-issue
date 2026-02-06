@@ -30,10 +30,7 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
-# .vscode/
-
-# Editor/IDE
 .claude/
 
 test/
+.DS_Store
