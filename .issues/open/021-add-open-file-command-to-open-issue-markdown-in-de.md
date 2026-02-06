@@ -7,17 +7,17 @@ created: 2026-02-06T14:27:24.912527+09:00
 updated: 2026-02-06T14:27:24.912527+09:00
 ---
 
-# Add open-file command to open issue markdown in default program
+# Add view command to open issue markdown in default program
 
 ## Description
 
-Add a new `gi open` command that opens an issue's markdown file using the system's default program associated with the `.md` extension. This allows users to quickly view or edit issues in their preferred markdown editor or viewer (e.g., Typora, VS Code, Obsidian).
+Add a new `gi view` command that opens an issue's markdown file using the system's default program associated with the `.md` extension. This allows users to quickly view or edit issues in their preferred markdown editor or viewer (e.g., Typora, VS Code, Obsidian).
 
-Usage: `gi open 001`
+Usage: `gi view 001`
 
 ## Requirements
 
-- Accept an issue ID as argument (e.g., `gi open 001`)
+- Accept an issue ID as argument (e.g., `gi view 001`)
 - Look up the issue file in `.issues/open/` and `.issues/closed/`
 - Open the file using the OS default program for `.md` files:
   - macOS: use `open` command
@@ -26,7 +26,7 @@ Usage: `gi open 001`
 
 ## Success Criteria
 
-- [ ] `gi open <id>` opens the issue markdown in the default associated program
+- [ ] `gi view <id>` opens the issue markdown in the default associated program
 - [ ] Works on macOS (`open`) and Linux (`xdg-open`)
 - [ ] Displays clear error when issue ID does not exist
 - [ ] Unit tests for file lookup logic

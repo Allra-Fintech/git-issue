@@ -82,6 +82,13 @@ gi edit 001
 # Opens the issue file in $EDITOR (defaults to vim)
 ```
 
+### View an issue in default program
+
+```bash
+gi view 001
+# Opens the issue markdown file in the system's default program
+```
+
 ### Search issues
 
 ```bash
