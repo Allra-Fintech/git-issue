@@ -4,7 +4,7 @@ assignee: ""
 labels:
     - feature
 created: 2026-02-06T14:27:24.912527+09:00
-updated: 2026-02-06T14:27:24.912527+09:00
+updated: 2026-02-06T14:40:03.891202+09:00
 ---
 
 # Add view command to open issue markdown in default program
