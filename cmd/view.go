@@ -6,6 +6,7 @@ import (
 	"runtime"
 
 	"github.com/Allra-Fintech/git-issue/pkg"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -46,6 +47,6 @@ func runView(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to open file: %w", err)
 	}
 
-	fmt.Printf("✓ Opened issue #%s in default program\n", issueID)
+	color.New(color.FgGreen).Printf("✓ Opened issue #%s in default program\n", issueID)
 	return nil
 }
